@@ -1,4 +1,4 @@
-package user
+package pegawai
 
 import (
 	"database/sql"
@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-type User struct {
+type Pegawai struct {
 	ID       int
 	Nama     string
 	Password string
@@ -23,7 +23,7 @@ type AuthMenu struct {
 // }
 
 func (am *AuthMenu) Duplicate(name string) bool {
-	res := am.DB.QueryRow("SELECT id FROM users where nama = ?", name)
+	res := am.DB.QueryRow("SELECT id FROM pegawai where nama_pegawai = ?", name)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {
