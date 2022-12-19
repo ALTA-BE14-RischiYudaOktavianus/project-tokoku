@@ -1,68 +1,115 @@
-package controllers
+package admin
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
+	"tokoku/entity"
 )
 
-func Register(db *sql.DB, newUser entity.User) (sql.Result, error) {
-
-	var query = "INSERT INTO user(nama_user,email,phone,alamat,foto_profil,kata_sandi) VALUES (?,?,?,?,?,?)"
-	statement, errPrepare := db.Prepare(query)
-
-	if errPrepare != nil {
-		log.Fatal("erorr prepare insert", errPrepare.Error())
-
-	}
-	result, errExec := statement.Exec(newUser.Nama, newUser.Email, newUser.Phone, newUser.Alamat, newUser.Foto_profil, newUser.Kata_sandi)
-	if errExec != nil {
-		log.Fatal("erorr Exec insert", errExec.Error())
-	} else {
-		row, _ := result.RowsAffected()
-		if row > 0 {
-			fmt.Println("berhasil")
-		} else {
-			fmt.Println("gagal")
-		}
-	}
-	return result, nil
-}
-func LoginUser(db *sql.DB, user entity.User) (entity.User, error) {
-	statm := db.QueryRow("SELECT Id_user,phone,kata_sandi FROM user WHERE phone = ? AND kata_sandi = ?", user.Phone, user.Kata_sandi)
-
-	var row entity.User
-	errs := statm.Scan(&row.Id, &row.Phone, &row.Kata_sandi)
-	//  bcrypt.GenerateFromPassword(, bcrypt.DefaultCost))
-
-	if errs != nil {
-		log.Fatal("Maaf No Telfon atau Password salah ")
-	}
-	return row, nil
+type Admin struct {
+	ID       int
+	Nama     string
+	Password string
 }
 
-func Readsdata(db *sql.DB, id int) (entity.User, error) {
-	res := db.QueryRow("SELECT Id_user,Nama_user,phone,alamat,foto_profil from user where id_user=?", id)
-	var barisUser entity.User
-
-	errscan := res.Scan(&barisUser.Id, &barisUser.Nama, &barisUser.Phone, &barisUser.Alamat, &barisUser.Foto_profil)
-
-	if errscan != nil {
-		if errscan == sql.ErrNoRows {
-			log.Fatal("error scan", errscan.Error())
-		}
-	}
-	return barisUser, nil
+type Pegawai struct {
+	ID           int
+	Nama_Pegawai string
+	Password     string
 }
-func UpdateUser(db *sql.DB, update entity.User) (sql.Result, error) {
+type AuthMenu struct {
+	DB *sql.DB
+}
+
+// func NewAuthMenu() *AuthMenu {
+// 	cfg := config.ReadConfig()
+// 	conn := config.ConnectSQL(*cfg)
+// 	return &AuthMenu{DB: conn}
+// }
+
+func (am *AuthMenu) Duplicate(name string) bool {
+	res := am.DB.QueryRow("SELECT id FROM pegawai where nama_pegawai = ?", name)
+	var idExist int
+	err := res.Scan(&idExist)
+	if err != nil {
+		log.Println("Result scan error", err.Error())
+		return false
+	}
+	return true
+}
+
+func (am *AuthMenu) Register(newUser Pegawai) (bool, error) {
+	// menyiapakn query untuk insert
+	registerQry, err := am.DB.Prepare("INSERT INTO pegawai (nama_pegawai, password) values (?,?)")
+	if err != nil {
+		log.Println("prepare insert user ", err.Error())
+		return false, errors.New("prepare statement insert user error")
+	}
+
+	if am.Duplicate(newUser.Nama_Pegawai) {
+		log.Println("duplicated information")
+		return false, errors.New("nama sudah digunakan")
+	}
+
+	// menjalankan query dengan parameter tertentu
+	res, err := registerQry.Exec(newUser.Nama_Pegawai, newUser.Password)
+	if err != nil {
+		log.Println("insert user ", err.Error())
+		return false, errors.New("insert user error")
+	}
+	// Cek berapa baris yang terpengaruh query diatas
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after insert user ", err.Error())
+		return false, errors.New("error setelah insert")
+	}
+
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
+	}
+
+	return true, nil
+}
+
+func (am *AuthMenu) Login(nama_pegawai string, password string) (Pegawai, error) {
+	loginQry, err := am.DB.Prepare("SELECT id FROM pegawai WHERE username = ? AND password = ?")
+	if err != nil {
+		log.Println("prepare insert user ", err.Error())
+		return Pegawai{}, errors.New("prepare statement insert user error")
+	}
+
+	row := loginQry.QueryRow(nama_pegawai, password)
+
+	if row.Err() != nil {
+		log.Println("login query ", row.Err().Error())
+		return Pegawai{}, errors.New("tidak bisa login, data tidak ditemukan")
+	}
+	res := Pegawai{}
+	err = row.Scan(&res.ID)
+
+	if err != nil {
+		log.Println("after login query ", err.Error())
+		return Pegawai{}, errors.New("tidak bisa login, kesalahan setelah error")
+	}
+
+	res.Nama_Pegawai = nama_pegawai
+
+	return res, nil
+}
+
+func (am *AuthMenu) UpdateBarang(db *sql.DB, update entity.Barang) (sql.Result, error) {
 	// res := db.QueryRow("SELECT Id_user,Nama_user,phone,alamat,foto_profil from user where id_user=?", id)
 	// var barisUser entity.User
-	var query = "UPDATE user set Nama_user = ?, email = ?, phone = ?,alamat = ? ,kata_sandi = ?  where Id_user = ?"
-	statement, errPrepare := db.Prepare(query)
+	var query = "UPDATE barang set nama_barang = ?, stock_barang = ?, deskripsi = ?, nama_pegawai = ?  where id_barang = ?"
+	statement, errPrepare := am.DB.Prepare(query)
 	if errPrepare != nil {
 		log.Fatal("erorr prepare update", errPrepare.Error())
 	}
-	result, errExec := statement.Exec(update.Nama, update.Email, update.Phone, update.Alamat, update.Kata_sandi, update.Id)
+	result, errExec := statement.Exec(update.Nama_Barang, update.Stock, update.Deskripsi, update.Nama_Pegawai, update.Id)
 
 	if errExec != nil {
 		log.Fatal("erorr Exec update", errExec.Error())
@@ -77,28 +124,28 @@ func UpdateUser(db *sql.DB, update entity.User) (sql.Result, error) {
 	return result, nil
 }
 
-func Top_up(db *sql.DB, total entity.Top_up, Id int) (entity.User, error) {
-	usr := db.QueryRow("SELECT Id_user, Nama_user,phone from user where phone=?", total.Phone)
+func (am *AuthMenu) Customer(db *sql.DB, cust entity.Customer, Id int) (entity.Customer, error) {
+	usr := db.QueryRow("SELECT id, nama_cust,nama_pegawai from customer where id=?", cust.Id)
 
-	var rowUser entity.User
-	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama, &rowUser.Phone)
+	var rowUser entity.Customer
+	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama_Customer, &rowUser.Id)
 	fmt.Println(rowUser.Id)
-	var query = "INSERT INTO topup(users_Id,Jumlah_Topup) VALUES (?,?)"
-	statement, errPrepare := db.Prepare(query)
+	var query = "INSERT INTO customer(nama_cust) VALUES (?)"
+	statement, errPrepare := am.DB.Prepare(query)
 	if errPrepare != nil {
 		log.Fatal("erorr prepare insert", errPrepare.Error())
 
 	}
 
-	result, errExec := statement.Exec(Id, total.Jumlah_TopUP)
+	result, errExec := statement.Exec(Id, cust.Nama_Customer)
 	if errExec != nil {
 		log.Fatal("erorr Exec insert", errExec.Error())
 	} else {
 		row, _ := result.RowsAffected()
 		if row > 0 {
-			fmt.Println("berhasil")
+			fmt.Println("data customer berhasil ditambahkan")
 		} else {
-			fmt.Println("gagal")
+			fmt.Println("data gagal ditambahkan")
 		}
 	}
 
@@ -110,30 +157,29 @@ func Top_up(db *sql.DB, total entity.Top_up, Id int) (entity.User, error) {
 	return rowUser, nil
 
 }
-func TfUser(db *sql.DB, total entity.Transfers, id int) (entity.User, error) {
-	usr := db.QueryRow("SELECT Id_user, Nama_user,phone from user where phone=?", total.Phone)
-	// usr2 := db.QueryRow("SELECT Id_user, Nama_user,phone from user where id=?", id)
-	// var barisUser entity.User
-	// errscan2:= usr2.Scan(&barisUser.Id,&barisUser.Nama)
-	var rowUser entity.User
-	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama, &rowUser.Phone)
+
+func (am *AuthMenu) Barang(db *sql.DB, barang entity.Barang, Id int) (entity.Barang, error) {
+	usr := db.QueryRow("SELECT id, nama_barang, stock_barang, deskripsi, nama_pegawai from barang where id=?", barang.Nama_Barang)
+
+	var rowUser entity.Barang
+	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama_Barang, &rowUser.Stock)
 	fmt.Println(rowUser.Id)
-	var query = "INSERT INTO transfers(pengirim_id,Jumlah_TF,penerima_id) VALUES (?,?,?)"
-	statement, errPrepare := db.Prepare(query)
+	var query = "INSERT INTO barang(id,nama_barang,stock_barang,nama_pegawai) VALUES (?,?,?,?)"
+	statement, errPrepare := am.DB.Prepare(query)
 	if errPrepare != nil {
 		log.Fatal("erorr prepare insert", errPrepare.Error())
 
 	}
 
-	result, errExec := statement.Exec(id, total.Jumlah_TF, rowUser.Id)
+	result, errExec := statement.Exec(Id, barang.Nama_Barang)
 	if errExec != nil {
 		log.Fatal("erorr Exec insert", errExec.Error())
 	} else {
 		row, _ := result.RowsAffected()
 		if row > 0 {
-			fmt.Println("berhasil")
+			fmt.Println("barang yang diinputkan berhasil ditambahkan")
 		} else {
-			fmt.Println("gagal")
+			fmt.Println("penginputan anda gagal")
 		}
 	}
 
@@ -145,27 +191,29 @@ func TfUser(db *sql.DB, total entity.Transfers, id int) (entity.User, error) {
 	return rowUser, nil
 
 }
-func History_Top_upUser(db *sql.DB, find entity.TopUp, Id int) (entity.Top_up, error) {
-	usr := db.QueryRow("SELECT Id_user, Nama_user,phone from user where phone=?", find.Phone)
-	var rowUser entity.Top_up
 
-	errscan := usr.Scan(&rowUser.Id_Tp, &rowUser.Id_user, &rowUser.Phone)
-	var query = "INSERT INTO topup(users_Id,Jumlah_Topup) VALUES (?,?)"
-	statement, errPrepare := db.Prepare(query)
+func (am *AuthMenu) DeleteBarang(db *sql.DB, barang entity.Barang, Id int) (entity.Barang, error) {
+	usr := db.QueryRow("SELECT id, nama_barang, stock_barang, deskripsi, nama_pegawai from barang where id=?", barang.Nama_Barang)
 
+	var rowUser entity.Barang
+	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama_Barang, &rowUser.Stock)
+	fmt.Println(rowUser.Id)
+	var query = "DELETE FROM barang(id,nama_barang,stock_barang,nama_pegawai) VALUES (?,?,?,?)"
+	statement, errPrepare := am.DB.Prepare(query)
 	if errPrepare != nil {
-		log.Fatal("erorr prepare insert", errPrepare.Error())
+		log.Fatal("erorr prepare delete", errPrepare.Error())
 
 	}
-	result, errExec := statement.Exec(Id, find.Jumlah_TUP)
+
+	result, errExec := statement.Exec(Id, barang.Nama_Barang)
 	if errExec != nil {
-		log.Fatal("erorr Exec insert", errExec.Error())
+		log.Fatal("erorr Exec delete", errExec.Error())
 	} else {
 		row, _ := result.RowsAffected()
 		if row > 0 {
-			fmt.Println("berhasil")
+			fmt.Println("barang yang berhasil dihapus")
 		} else {
-			fmt.Println("gagal")
+			fmt.Println("gagal dihapus")
 		}
 	}
 
@@ -175,15 +223,5 @@ func History_Top_upUser(db *sql.DB, find entity.TopUp, Id int) (entity.Top_up, e
 		}
 	}
 	return rowUser, nil
-}
 
-func Search_Profil(db *sql.DB, search entity.User) (entity.User, error) {
-	statm := db.QueryRow("SELECT Id_user, Nama_user, Phone, Alamat, Kata_sandi FROM user WHERE phone = ?", search.Phone)
-
-	var row entity.User
-	errs := statm.Scan(&row.Id, &row.Nama, &row.Phone, &row.Alamat, &row.Kata_sandi)
-	if errs != nil {
-		log.Fatal("Error Search ", errs.Error())
-	}
-	return row, nil
 }

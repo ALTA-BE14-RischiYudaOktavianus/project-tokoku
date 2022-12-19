@@ -1,4 +1,4 @@
-package user
+package pegawai
 
 import (
 	"database/sql"
@@ -6,9 +6,9 @@ import (
 	"log"
 )
 
-type User struct {
+type Pegawai struct {
 	ID       int
-	Nama     string
+	Username string
 	Password string
 }
 
@@ -33,21 +33,21 @@ func (am *AuthMenu) Duplicate(name string) bool {
 	return true
 }
 
-func (am *AuthMenu) Register(newUser User) (bool, error) {
+func (am *AuthMenu) Register(newUser Pegawai) (bool, error) {
 	// menyiapakn query untuk insert
-	registerQry, err := am.DB.Prepare("INSERT INTO users (nama, password) values (?,?)")
+	registerQry, err := am.DB.Prepare("INSERT INTO pegawai (username, password) values (?,?)")
 	if err != nil {
 		log.Println("prepare insert user ", err.Error())
 		return false, errors.New("prepare statement insert user error")
 	}
 
-	if am.Duplicate(newUser.Nama) {
+	if am.Duplicate(newUser.Username) {
 		log.Println("duplicated information")
 		return false, errors.New("nama sudah digunakan")
 	}
 
 	// menjalankan query dengan parameter tertentu
-	res, err := registerQry.Exec(newUser.Nama, newUser.Password)
+	res, err := registerQry.Exec(newUser.Username, newUser.Password)
 	if err != nil {
 		log.Println("insert user ", err.Error())
 		return false, errors.New("insert user error")
@@ -68,7 +68,7 @@ func (am *AuthMenu) Register(newUser User) (bool, error) {
 	return true, nil
 }
 func (am *AuthMenu) Ceklogin(name string) bool {
-	res := am.DB.QueryRow("SELECT id FROM users where nama = ?", name)
+	res := am.DB.QueryRow("SELECT id FROM pegawai where username = ?", name)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {
@@ -78,8 +78,8 @@ func (am *AuthMenu) Ceklogin(name string) bool {
 	return true
 }
 
-func (am *AuthMenu) Login(newUser User) (bool, int, error) {
-	res := am.DB.QueryRow("SELECT id FROM users where nama = ? and password = ?", newUser.Nama, newUser.Password)
+func (am *AuthMenu) Login(newUser Pegawai) (bool, int, error) {
+	res := am.DB.QueryRow("SELECT id FROM pegawai where username = ? and password = ?", newUser.Username, newUser.Password)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {
