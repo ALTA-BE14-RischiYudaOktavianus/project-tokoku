@@ -1,4 +1,4 @@
-package user
+package pegawai
 
 import (
 	"database/sql"
@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-type User struct {
+type Pegawai struct {
 	ID       int
 	Nama     string
 	Password string
@@ -23,7 +23,7 @@ type AuthMenu struct {
 // }
 
 func (am *AuthMenu) Duplicate(name string) bool {
-	res := am.DB.QueryRow("SELECT id FROM users where nama = ?", name)
+	res := am.DB.QueryRow("SELECT id FROM pegawai where nama_pegawai = ?", name)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {
@@ -68,7 +68,7 @@ func (am *AuthMenu) Register(newUser User) (bool, error) {
 	return true, nil
 }
 func (am *AuthMenu) Ceklogin(name string) bool {
-	res := am.DB.QueryRow("SELECT id FROM users where nama = ?", name)
+	res := am.DB.QueryRow("SELECT id FROM pegawai where nama_pegawai = ?", name)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {
@@ -78,8 +78,8 @@ func (am *AuthMenu) Ceklogin(name string) bool {
 	return true
 }
 
-func (am *AuthMenu) Login(newUser User) (bool, int, error) {
-	res := am.DB.QueryRow("SELECT id FROM users where nama = ? and password = ?", newUser.Nama, newUser.Password)
+func (am *AuthMenu) Login(newPegawai Pegawai) (bool, int, error) {
+	res := am.DB.QueryRow("SELECT id FROM pegawai where nama_pegawai = ? and password = ?", newPegawai.Nama, newPegawai.Password)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {
