@@ -11,9 +11,3 @@ type Admin struct {
 	Username string
 	Password string
 }
-
-type Transaksi struct {
-	Id     int
-	Title  string
-	Uraian string
-}

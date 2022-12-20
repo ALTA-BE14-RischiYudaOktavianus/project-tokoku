@@ -29,7 +29,7 @@ git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git
 4. Registrasi pegawai jika belum memiliki akun oleh admin
 5. Login untuk dapat menggunakan semua fitur yang tersedia
 
-## *Menu*
+## *Menu ADMIN*
 1. Untuk melakukan run program lakukan seperti contoh dibawah ini: 
     ```
     go run main.go
@@ -37,6 +37,17 @@ git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git
 2. Akan muncul Menu berikut ini pada terminal:
 ![contoh](./dokumentasi/menuawal.png)
 
-3. Lalu silahkan input username dan Password. Jika sebagai admin maka akan muncul menu seperti gambar pada menu 4.
+3. Lalu silahkan input username dan Password. Jika sebagai ADMIN maka akan muncul menu seperti gambar dibawah:
 ![contoh](./dokumentasi/daftarmenuadmin.png)
-=======
+
+
+## *Menu PEGAWAI*
+1. Untuk melakukan run program lakukan seperti contoh dibawah ini: 
+    ```
+    go run main.go
+    ```
+2. Akan muncul Menu berikut ini pada terminal:
+![contoh](./dokumentasi/menuawal.png)
+
+3. Lalu silahkan input username dan Password. Jika sebagai PEGAWAI maka akan muncul menu seperti gambar pada menu 4.
+![contoh](./dokumentasi/daftarmenupegawai.png)
