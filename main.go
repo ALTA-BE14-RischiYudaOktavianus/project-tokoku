@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-
 	"tokoku/admin"
+	"tokoku/barang"
 	config "tokoku/config"
-	"tokoku/entity"
+	"tokoku/customer"
 	"tokoku/pegawai"
-	// _customer _"tokoku/customer"
-	// _transaksi _"tokoku/transaksi"
 )
 
 func callClear() {
@@ -24,6 +22,8 @@ func main() {
 	var conn = config.ConnectSQL(*cfg)
 	var authMenu = pegawai.AuthMenu{DB: conn}
 	var authAdmMenu = admin.AuthMenu{DB: conn}
+	var authBrgMenu = barang.AuthMenu{DB: conn}
+	var authCustMenu = customer.AuthMenu{DB: conn}
 	var isRunning bool = true
 	for isRunning {
 		fmt.Print("=========Program TOKOKU=========")
@@ -50,7 +50,7 @@ func main() {
 					var isRunning2 bool = true
 					for isRunning2 {
 						fmt.Print("=========Program Activity Sederhana=========")
-						fmt.Print("\nPILIHAN anda:\n1. Tambah Pegawai \n2. Tambah Customer \n3. Tambah Barang \n4. Edit Barang \n5. Update Barang \n6. Transaksi \n7. Delete Pegawai \n8. Delete Barang \n9. Logout\n")
+						fmt.Print("\nPILIHAN anda:\n1. Tambah Pegawai \n2. Delete Transaksi \n3. Delete Pegawai \n4. Delete Barang \n9. Logout\n")
 						fmt.Println("=========Masukkan Pilihan Anda=========")
 						var pilihan int
 						fmt.Scanln(&pilihan)
@@ -79,84 +79,15 @@ func main() {
 							}
 						case 2:
 							{
-								fmt.Print("=========Program TOKOKU=========")
-								var newUser entity.Customer
-								fmt.Print("\nMasukkan nama : ")
-								fmt.Scanln(&newUser.Nama_Customer)
-								fmt.Print("\nMasukkan ID Pegawai : ")
-								fmt.Scanln(&newUser.Nama_Pegawai)
-								res, err := authAdmMenu.Customer(newUser)
-								if err != nil {
-									fmt.Println(err.Error())
-								}
-								if res {
-									fmt.Println("Sukses mendaftarkan customer")
-								} else {
-									fmt.Println("Gagal mendaftarkan customer")
-								}
-								fmt.Println("=========Data Customer=========")
+
 							}
 						case 3:
 							{
-								fmt.Print("=========Program TOKOKU=========")
-								var newBarang entity.Barang
-								fmt.Print("\nMasukkan nama barang : ")
-								fmt.Scanln(&newBarang.Nama_Barang)
-								fmt.Print("\nMasukkan jumlah Stock : ")
-								fmt.Scanln(&newBarang.Stock)
-								fmt.Print("\nMasukkan deskripsi barang : ")
-								fmt.Scanln(&newBarang.Deskripsi)
-								fmt.Print("\nMasukkan ID Pegawai : ")
-								fmt.Scanln(&newBarang.Nama_Pegawai)
-								res, err := authAdmMenu.Barang(newBarang)
-								if err != nil {
-									fmt.Println(err.Error())
-								}
-								if res {
-									fmt.Println("Sukses mendaftarkan Barang")
-								} else {
-									fmt.Println("Gagal mendaftarkan Barang")
-								}
-								fmt.Println("=========Data Barang=========")
+
 							}
 						case 4:
 							{
-								fmt.Print("=========Program TOKOKU=========")
-								var updateBarang entity.Barang
-								fmt.Println("\nmasukkan id barang yang akan diedit :")
-								fmt.Scanln(&updateBarang.Id)
-								fmt.Println("\nmasukkan Informasi terbaru")
-								fmt.Scanln(&updateBarang.Deskripsi)
-								res, err := authAdmMenu.EditBarang(updateBarang)
-								if err != nil {
-									fmt.Println(err.Error())
-								}
-								if res {
-									fmt.Println("Sukses mengUpdate Barang")
-								} else {
-									fmt.Println("Gagal mengUpdate Barang")
-								}
-								fmt.Println("=========Data Barang=========")
-							}
-						case 5:
-							{
-								fmt.Print("=========Program TOKOKU=========")
-								var updateBarang entity.Barang
-								fmt.Println("\nmasukkan id barang yang akan diedit :")
-								fmt.Scanln(&updateBarang.Id)
-								fmt.Println("\nmasukkan Jumlah stok terbaru")
-								fmt.Scanln(&updateBarang.Stock)
 
-								res, err := authAdmMenu.UpdateBarang(updateBarang)
-								if err != nil {
-									fmt.Println(err.Error())
-								}
-								if res {
-									fmt.Println("Sukses mengUpdate Barang")
-								} else {
-									fmt.Println("Gagal mengUpdate Barang")
-								}
-								fmt.Println("=========Data Barang=========")
 							}
 						case 9:
 							callClear()
@@ -164,21 +95,12 @@ func main() {
 						}
 					}
 				} else if res.ID > 1 {
-					var Username, Password string
-					fmt.Print("Masukkan nama : ")
-					fmt.Scanln(&Username)
-					fmt.Print("Masukkan password : ")
-					fmt.Scanln(&Password)
-					res, err := authMenu.Login(Username, Password)
-					if err != nil {
-						fmt.Println(err.Error())
-					}
-					if res.ID > 0 {
+					if res.ID > 1 {
 						fmt.Println("Sukses Login", "selamat datang", Username)
 						var isRunning2 bool = true
 						for isRunning2 {
 							fmt.Print("=========Program TOKOKU=========")
-							fmt.Print("\nPILIHAN anda:\n1.Tambah Customer \n2. Tambah Barang \n4. Edit Barang \n5. Update Barang \n6. Transaksi \n9. Logout\n")
+							fmt.Print("\nPILIHAN anda:\n1. Tambah Customer \n2. Tambah Barang \n3. Edit Informasi \n4. Update Stock Barang \n5. Transaksi \n9. Logout\n")
 							fmt.Println("=========Masukkan Pilihan Anda=========")
 							var choice2 int
 							fmt.Scanln(&choice2)
@@ -187,9 +109,90 @@ func main() {
 							switch choice2 {
 							case 1:
 								{
-									fmt.Println("=========Program Activity Sederhana=========")
+									fmt.Print("=========Program TOKOKU=========")
+									var newUser customer.Customer
+									fmt.Print("\nMasukkan nama : ")
+									fmt.Scanln(&newUser.Nama_Customer)
+									fmt.Print("\nMasukkan ID Pegawai : ")
+									fmt.Scanln(&newUser.Nama_Pegawai)
+									res, err := authCustMenu.Customer(newUser)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+									if res {
+										fmt.Println("Sukses mendaftarkan customer")
+									} else {
+										fmt.Println("Gagal mendaftarkan customer")
+									}
+									fmt.Println("=========Data Customer=========")
+								}
+							case 2:
+								{
+									fmt.Print("=========Program TOKOKU=========")
+									var newBarang barang.Barang
+									fmt.Print("\nMasukkan nama barang : ")
+									fmt.Scanln(&newBarang.Nama_Barang)
+									fmt.Print("\nMasukkan jumlah Stock : ")
+									fmt.Scanln(&newBarang.Stock)
+									fmt.Print("\nMasukkan deskripsi barang : ")
+									fmt.Scanln(&newBarang.Deskripsi)
+									fmt.Print("\nMasukkan ID Pegawai : ")
+									fmt.Scanln(&newBarang.Nama_Pegawai)
+									res, err := authBrgMenu.Barang(newBarang)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+									if res {
+										fmt.Println("Sukses mendaftarkan Barang")
+									} else {
+										fmt.Println("Gagal mendaftarkan Barang")
+									}
+									fmt.Println("=========Data Barang=========")
+								}
+							case 3:
+								{
+									fmt.Print("=========Program TOKOKU=========")
+									var updateBarang barang.Barang
+									fmt.Println("\nmasukkan id barang yang akan diedit :")
+									fmt.Scanln(&updateBarang.Id)
+									fmt.Println("\nmasukkan Informasi terbaru")
+									fmt.Scanln(&updateBarang.Deskripsi)
+									res, err := authBrgMenu.EditBarang(updateBarang)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+									if res {
+										fmt.Println("Sukses mengUpdate Barang")
+									} else {
+										fmt.Println("Gagal mengUpdate Barang")
+									}
+									fmt.Println("=========Data Barang=========")
+								}
+							case 4:
+								{
+									fmt.Print("=========Program TOKOKU=========")
+									var updateBarang barang.Barang
+									fmt.Println("\nmasukkan id barang yang akan diedit :")
+									fmt.Scanln(&updateBarang.Id)
+									fmt.Println("\nmasukkan Jumlah stok terbaru")
+									fmt.Scanln(&updateBarang.Stock)
 
-									fmt.Println("==================")
+									res, err := authBrgMenu.UpdateBarang(updateBarang)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+									if res {
+										fmt.Println("Sukses mengUpdate Barang")
+									} else {
+										fmt.Println("Gagal mengUpdate Barang")
+									}
+									fmt.Println("=========Data Barang=========")
+								}
+							case 5:
+								{
+									fmt.Print("=========Program TOKOKU=========")
+
+									fmt.Println("=========Transaksi=========")
 								}
 							case 9:
 								callClear()
