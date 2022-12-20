@@ -24,7 +24,7 @@ Tokoku merupakan sebuah program yang dibuat untuk mempermudah sebuah pekerjaan y
 
 1. Clone source code dari github
 ```
-*git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git*
+git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git
 ```
 3. Aplikasi akan mulai dan berjalan
 4. Registrasi pegawai jika belum memiliki akun oleh admin
@@ -36,12 +36,9 @@ Tokoku merupakan sebuah program yang dibuat untuk mempermudah sebuah pekerjaan y
     go run main.go
     ```
 2. Akan muncul Menu berikut ini pada terminal:
- ```
+
 ![contoh](./dokumentasi/menuawal.png)
- ```
 3. Lalu silahkan input username dan Password. Jika sebagai admin maka akan muncul menu seperti gambar pada menu 4.
 4. muncul Menu:
- ```
 ![contoh](./dokumentasi/daftarmenuadmin.png)
- ```
 =======
