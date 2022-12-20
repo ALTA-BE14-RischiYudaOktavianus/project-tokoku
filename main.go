@@ -163,7 +163,7 @@ func main() {
 						var isRunning2 bool = true
 						for isRunning2 {
 							fmt.Print("=========Program TOKOKU=========")
-							fmt.Print("\nPILIHAN anda:\n1. Tambah Customer \n2. Tambah Barang \n3. Edit Informasi \n4. Update Stock Barang \n5. Transaksi \n9. Logout\n")
+							fmt.Print("\nPILIHAN anda:\n1. Tambah Customer \n2. Tambah Barang \n3. Edit Informasi \n4. Update Stock Barang \n5. Transaksi \n6. Cetak Nota Transaksi \n9. Logout\n")
 							fmt.Println("=========Masukkan Pilihan Anda=========")
 							var choice2 int
 							fmt.Scanln(&choice2)
@@ -259,7 +259,34 @@ func main() {
 								{
 									fmt.Print("=========Program TOKOKU=========")
 									fmt.Print("\n=========Menu Transaksi=========")
-									fmt.Print("\n=========Menu Transaksi=========")
+									var newTransaksi transaksi.Transaksi
+									fmt.Println("\nNama Barang: ")
+									fmt.Scanln(&newTransaksi.Nama_Barang)
+									fmt.Println("\nJumlah Barang: ")
+									fmt.Scanln(&newTransaksi.Total_Qty)
+									fmt.Println("\nNama Customer: ")
+									fmt.Scanln(&newTransaksi.Nama_Customer)
+									fmt.Println("\nNama Pegawai: ")
+									fmt.Scanln(&newTransaksi.Nama_Pegawai)
+									// fmt.Println("Tanggal Transaksi")
+									// fmt.Println("Tuliskan dengan format: YYYY-MM-DD")
+									// fmt.Scanln(&newTransaksi.Tanggal_Transaksi)
+
+									res, err := authTransMenu.AddTransaksi(newTransaksi)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+									if res {
+										fmt.Println("TRANSAKSI SUKSES")
+									} else {
+										fmt.Println("TRANSAKSI GAGAL")
+									}
+									fmt.Println("=========Transaksi=========")
+								}
+							case 6:
+								{
+									fmt.Print("=========Program TOKOKU=========")
+									fmt.Println("\n=========Cetak Nota Transaksi=========")
 
 									fmt.Println("=========Transaksi=========")
 								}
@@ -272,7 +299,7 @@ func main() {
 						fmt.Println("Gagal Login!", Username, "\nsilahkan cek nama dan password anda kembali")
 					}
 				} else {
-					fmt.Println("Gagal Login!", Username, "\nsilahkan cek nama dan pasword anda kembali")
+					fmt.Println("Gagal Login!", Username, "\nsilahkan cek nama dan password anda kembali")
 				}
 			}
 		case 0:
