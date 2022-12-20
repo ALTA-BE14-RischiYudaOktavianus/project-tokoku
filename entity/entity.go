@@ -17,12 +17,13 @@ type Transaksi struct {
 	Title  string
 	Uraian string
 }
+
 type Barang struct {
 	Id           int
 	Nama_Barang  string
-	Deskripsi    string
 	Stock        int
-	Nama_Pegawai string
+	Deskripsi    string
+	Nama_Pegawai int
 }
 
 type Customer struct {

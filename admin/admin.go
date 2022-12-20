@@ -39,7 +39,26 @@ func (am *AuthMenu) Duplicate(name string) bool {
 	}
 	return true
 }
-
+func (am *AuthMenu) DuplicateBarang(name string) bool {
+	res := am.DB.QueryRow("SELECT id FROM barang where nama_barang = ?", name)
+	var idExist int
+	err := res.Scan(&idExist)
+	if err != nil {
+		log.Println("Result scan error", err.Error())
+		return false
+	}
+	return true
+}
+func (am *AuthMenu) DuplicateCustomer(name string) bool {
+	res := am.DB.QueryRow("SELECT id FROM customer where nama_cust = ?", name)
+	var idExist int
+	err := res.Scan(&idExist)
+	if err != nil {
+		log.Println("Result scan error", err.Error())
+		return false
+	}
+	return true
+}
 func (am *AuthMenu) Register(newUser Pegawai) (bool, error) {
 	// menyiapakn query untuk insert
 	registerQry, err := am.DB.Prepare("INSERT INTO pegawai (nama_pegawai, password) values (?,?)")
@@ -100,96 +119,132 @@ func (am *AuthMenu) Login(nama_pegawai string, password string) (Pegawai, error)
 
 	return res, nil
 }
+func (am *AuthMenu) EditBarang(editBarang entity.Barang) (bool, error) {
 
-func (am *AuthMenu) UpdateBarang(db *sql.DB, update entity.Barang) (sql.Result, error) {
-	// res := db.QueryRow("SELECT Id_user,Nama_user,phone,alamat,foto_profil from user where id_user=?", id)
-	// var barisUser entity.User
-	var query = "UPDATE barang set nama_barang = ?, stock_barang = ?, deskripsi = ?, nama_pegawai = ?  where id_barang = ?"
-	statement, errPrepare := am.DB.Prepare(query)
-	if errPrepare != nil {
-		log.Fatal("erorr prepare update", errPrepare.Error())
+	addQry, err := am.DB.Prepare("UPDATE barang set deskripsi=?, nama_pegawai=?  where id= ?")
+	// addQry, err := am.DB.Prepare("UPDATE barang set nama_barang, stok_barang, deskripsi, nama_pegawai  where id= ?")
+	if err != nil {
+		log.Println("Update barang prepare", err.Error())
+		return false, errors.New("prepare Edit barang error")
 	}
-	result, errExec := statement.Exec(update.Nama_Barang, update.Stock, update.Deskripsi, update.Nama_Pegawai, update.Id)
 
-	if errExec != nil {
-		log.Fatal("erorr Exec update", errExec.Error())
-	} else {
-		row, _ := result.RowsAffected()
-		if row > 0 {
-			fmt.Println("berhasil")
-		} else {
-			fmt.Println("gagal")
-		}
+	res, err := addQry.Exec(editBarang.Id, editBarang.Deskripsi, editBarang.Nama_Pegawai)
+	if err != nil {
+		log.Println("Update barang", err.Error())
+		return false, errors.New("Update Barang error")
 	}
-	return result, nil
+
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after Update Barang", err.Error())
+		return false, errors.New("after Update Barang error")
+	}
+
+	if affRows <= 0 {
+		log.Println("No record affected")
+		return true, errors.New("No record")
+	}
+
+	return true, nil
+}
+func (am *AuthMenu) UpdateBarang(editBarang entity.Barang) (bool, error) {
+
+	addQry, err := am.DB.Prepare("UPDATE barang set stok_barang=?, nama_pegawai=?  where id= ?")
+	// addQry, err := am.DB.Prepare("UPDATE barang set nama_barang, stok_barang, deskripsi, nama_pegawai  where id= ?")
+	if err != nil {
+		log.Println("Update barang prepare", err.Error())
+		return false, errors.New("prepare Edit barang error")
+	}
+
+	res, err := addQry.Exec(editBarang.Id, editBarang.Nama_Barang, editBarang.Stock, editBarang.Deskripsi, editBarang.Nama_Pegawai)
+	if err != nil {
+		log.Println("Update barang", err.Error())
+		return false, errors.New("Update Barang error")
+	}
+
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after Update Barang", err.Error())
+		return false, errors.New("after Update Barang error")
+	}
+
+	if affRows <= 0 {
+		log.Println("No record affected")
+		return true, errors.New("No record")
+	}
+
+	return true, nil
+}
+func (am *AuthMenu) Customer(newUser entity.Customer) (bool, error) {
+	// menyiapakn query untuk insert
+	registerQry, err := am.DB.Prepare("INSERT INTO customer (nama_cust, nama_pegawai) values (?,?)")
+	if err != nil {
+		log.Println("prepare insert cust ", err.Error())
+		return false, errors.New("prepare statement insert cust error")
+	}
+
+	if am.DuplicateCustomer(newUser.Nama_Customer) {
+		log.Println("duplicated information")
+		return false, errors.New("nama sudah digunakan")
+	}
+
+	// menjalankan query dengan parameter tertentu
+	res, err := registerQry.Exec(newUser.Nama_Customer, newUser.Nama_Pegawai)
+	if err != nil {
+		log.Println("insert cust ", err.Error())
+		return false, errors.New("insert cust error")
+	}
+	// Cek berapa baris yang terpengaruh query diatas
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after insert cust ", err.Error())
+		return false, errors.New("error setelah insert")
+	}
+
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
+	}
+
+	return true, nil
 }
 
-func (am *AuthMenu) Customer(db *sql.DB, cust entity.Customer, Id int) (entity.Customer, error) {
-	usr := db.QueryRow("SELECT id, nama_cust,nama_pegawai from customer where id=?", cust.Id)
+func (am *AuthMenu) Barang(newBarang entity.Barang) (bool, error) {
 
-	var rowUser entity.Customer
-	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama_Customer, &rowUser.Id)
-	fmt.Println(rowUser.Id)
-	var query = "INSERT INTO customer(nama_cust) VALUES (?)"
-	statement, errPrepare := am.DB.Prepare(query)
-	if errPrepare != nil {
-		log.Fatal("erorr prepare insert", errPrepare.Error())
-
+	registerQry, err := am.DB.Prepare("INSERT INTO barang(nama_barang,stok_barang,deskripsi,nama_pegawai) VALUES (?,?,?,?)")
+	if err != nil {
+		log.Println("prepare insert barang ", err.Error())
+		return false, errors.New("prepare statement insert barang error")
 	}
 
-	result, errExec := statement.Exec(Id, cust.Nama_Customer)
-	if errExec != nil {
-		log.Fatal("erorr Exec insert", errExec.Error())
-	} else {
-		row, _ := result.RowsAffected()
-		if row > 0 {
-			fmt.Println("data customer berhasil ditambahkan")
-		} else {
-			fmt.Println("data gagal ditambahkan")
-		}
+	if am.DuplicateBarang(newBarang.Nama_Barang) {
+		log.Println("duplicated information")
+		return false, errors.New("nama barang sudah digunakan")
 	}
 
-	if errscan != nil {
-		if errscan == sql.ErrNoRows {
-			log.Fatal("error scan", errscan.Error())
-		}
+	// menjalankan query dengan parameter tertentu
+	res, err := registerQry.Exec(newBarang.Nama_Barang, newBarang.Stock, newBarang.Deskripsi, newBarang.Nama_Pegawai)
+	if err != nil {
+		log.Println("insert barang ", err.Error())
+		return false, errors.New("insert barang error")
 	}
-	return rowUser, nil
+	// Cek berapa baris yang terpengaruh query diatas
+	affRows, err := res.RowsAffected()
 
-}
-
-func (am *AuthMenu) Barang(db *sql.DB, barang entity.Barang, Id int) (entity.Barang, error) {
-	usr := db.QueryRow("SELECT id, nama_barang, stock_barang, deskripsi, nama_pegawai from barang where id=?", barang.Nama_Barang)
-
-	var rowUser entity.Barang
-	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama_Barang, &rowUser.Stock)
-	fmt.Println(rowUser.Id)
-	var query = "INSERT INTO barang(id,nama_barang,stock_barang,nama_pegawai) VALUES (?,?,?,?)"
-	statement, errPrepare := am.DB.Prepare(query)
-	if errPrepare != nil {
-		log.Fatal("erorr prepare insert", errPrepare.Error())
-
+	if err != nil {
+		log.Println("after insert barang ", err.Error())
+		return false, errors.New("error setelah insert")
 	}
 
-	result, errExec := statement.Exec(Id, barang.Nama_Barang)
-	if errExec != nil {
-		log.Fatal("erorr Exec insert", errExec.Error())
-	} else {
-		row, _ := result.RowsAffected()
-		if row > 0 {
-			fmt.Println("barang yang diinputkan berhasil ditambahkan")
-		} else {
-			fmt.Println("penginputan anda gagal")
-		}
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
 	}
 
-	if errscan != nil {
-		if errscan == sql.ErrNoRows {
-			log.Fatal("error scan", errscan.Error())
-		}
-	}
-	return rowUser, nil
-
+	return true, nil
 }
 
 func (am *AuthMenu) DeleteBarang(db *sql.DB, barang entity.Barang, Id int) (entity.Barang, error) {
