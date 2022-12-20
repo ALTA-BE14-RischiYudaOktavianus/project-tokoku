@@ -3,9 +3,9 @@
 Tokoku merupakan sebuah program yang dibuat untuk mempermudah sebuah pekerjaan yang berbasis sebuah toko. Dalam program ini terdapat 1(satu) orang admin, pegawai, stock barang, transaksi dan data dari customer toko.
 
 ## 1.Admin 
-# Admin bertugas mengatur seluruh kegiatan yang terdapat program ini dan memiliki otoritas penuh dalam pengendalian program. Menambahkan data pegawai yang mengakses program dan bisa menghapus semua data yang berada didalam program tanpa terkecuali, kecuali akun pegawai yang sudah tidak bekerja. Serta bisa melakukan seluruh kegiatan dari pegawai.
+# Admin bertugas mengatur seluruh kegiatan yang terdapat pada program ini dan memiliki otoritas penuh dalam pengendalian program. Menambahkan data pegawai yang mengakses program dan bisa menghapus semua data yang berada didalam program tanpa terkecuali, kecuali akun pegawai yang sudah tidak bekerja.
 ## 2.Pegawai 
-# Pegawai memiliki tugas untuk menambahkan stock barang, mengedit informasi barang, menghapus stock barang, menambahkan data customer, dan membuat nota transaksi pembelian barang.
+# Pegawai memiliki tugas untuk menambahkan stock barang, mengedit informasi barang, menginput transaksi, menambahkan data customer, dan membuat nota transaksi pembelian barang.
 ## 3.Transaksi
 # Transaksi adalah fitur penting dalam program ini dimana transaksi dijalankan oleh pegawai sesuai request barang dan jumlah barang yang diinginkan oleh customer.
 
@@ -37,7 +37,7 @@ git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git
 2. Akan muncul Menu berikut ini pada terminal:
 ![contoh](./dokumentasi/menuawal.png)
 
-3. Lalu silahkan input username dan Password. Jika sebagai ADMIN maka akan muncul menu seperti gambar dibawah:
+3. Lalu silahkan input username dan Password. Jika sebagai ADMIN maka akan muncul menu seperti gambar:
 ![contoh](./dokumentasi/daftarmenuadmin.png)
 
 
@@ -49,5 +49,5 @@ git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git
 2. Akan muncul Menu berikut ini pada terminal:
 ![contoh](./dokumentasi/menuawal.png)
 
-3. Lalu silahkan input username dan Password. Jika sebagai PEGAWAI maka akan muncul menu seperti gambar pada menu 4.
+3. Lalu silahkan input username dan Password. Jika sebagai PEGAWAI maka akan muncul menu seperti gambar:
 ![contoh](./dokumentasi/daftarmenupegawai.png)
