@@ -51,7 +51,7 @@ func main() {
 					fmt.Println("Sukses Login", "selamat datang", Username)
 					var isRunning2 bool = true
 					for isRunning2 {
-						fmt.Print("=========Program Activity Sederhana=========")
+						fmt.Print("=========Program TOKOKU=========")
 						fmt.Print("\nPILIHAN anda:\n1. Tambah Pegawai \n2. Delete Transaksi \n3. Delete Customer \n4. Delete Barang \n5. Delete Pegawai \n9. Logout\n")
 						fmt.Println("=========Masukkan Pilihan Anda=========")
 						var pilihan int
@@ -62,6 +62,7 @@ func main() {
 						case 1:
 							{
 								fmt.Print("=========Program TOKOKU=========")
+								fmt.Print("\n=========Menu Menambahkan Pegawai=========")
 								var newUser admin.Pegawai
 								fmt.Print("\nMasukkan nama : ")
 								fmt.Scanln(&newUser.Nama_Pegawai)
@@ -99,6 +100,7 @@ func main() {
 						case 3:
 							{
 								fmt.Print("=========Program TOKOKU=========")
+								fmt.Print("\n=========Menu Menghapus Customer=========")
 								var deleteCust customer.Customer
 								fmt.Println("\nmasukkan id customer yang akan diHapus :")
 								fmt.Scanln(&deleteCust.Id)
@@ -116,6 +118,7 @@ func main() {
 						case 4:
 							{
 								fmt.Print("=========Program TOKOKU=========")
+								fmt.Print("\n=========Menu Menghapus Barang=========")
 								var deleteBarang barang.Barang
 								fmt.Println("\nmasukkan id barang yang akan diHapus :")
 								fmt.Scanln(&deleteBarang.Id)
@@ -133,6 +136,7 @@ func main() {
 						case 5:
 							{
 								fmt.Print("=========Program TOKOKU=========")
+								fmt.Print("\n=========Menu Menghapus Pegawai=========")
 								var deletePegawai pegawai.Pegawai
 								fmt.Println("\nmasukkan id barang yang akan diHapus :")
 								fmt.Scanln(&deletePegawai.ID)
@@ -168,6 +172,7 @@ func main() {
 							case 1:
 								{
 									fmt.Print("=========Program TOKOKU=========")
+									fmt.Print("\n=========Menu Menambahkan Customer=========")
 									var newUser customer.Customer
 									fmt.Print("\nMasukkan nama : ")
 									fmt.Scanln(&newUser.Nama_Customer)
@@ -187,6 +192,7 @@ func main() {
 							case 2:
 								{
 									fmt.Print("=========Program TOKOKU=========")
+									fmt.Print("\n=========Menu Menambahkan Barang=========")
 									var newBarang barang.Barang
 									fmt.Print("\nMasukkan nama barang : ")
 									fmt.Scanln(&newBarang.Nama_Barang)
@@ -210,6 +216,7 @@ func main() {
 							case 3:
 								{
 									fmt.Print("=========Program TOKOKU=========")
+									fmt.Print("\n=========Menu Edit Informasi Barang=========")
 									var updateBarang barang.Barang
 									fmt.Println("\nmasukkan id barang yang akan diedit :")
 									fmt.Scanln(&updateBarang.Id)
@@ -229,6 +236,7 @@ func main() {
 							case 4:
 								{
 									fmt.Print("=========Program TOKOKU=========")
+									fmt.Print("\n=========Menu Update Stock Barang=========")
 									var updateBarang barang.Barang
 									fmt.Println("\nmasukkan id barang yang akan diedit :")
 									fmt.Scanln(&updateBarang.Id)
@@ -249,6 +257,8 @@ func main() {
 							case 5:
 								{
 									fmt.Print("=========Program TOKOKU=========")
+									fmt.Print("\n=========Menu Transaksi=========")
+									fmt.Print("\n=========Menu Transaksi=========")
 
 									fmt.Println("=========Transaksi=========")
 								}
@@ -258,7 +268,7 @@ func main() {
 							}
 						}
 					} else {
-						fmt.Println("Gagal Login!", Username, "\nsilahkan cek nama dan pasword anda kembali")
+						fmt.Println("Gagal Login!", Username, "\nsilahkan cek nama dan password anda kembali")
 					}
 				} else {
 					fmt.Println("Gagal Login!", Username, "\nsilahkan cek nama dan pasword anda kembali")
@@ -273,5 +283,5 @@ func main() {
 		}
 
 	}
-	fmt.Println("TERIMAKASIH SUDAH MENGGUNAKAN TOKOKU")
+	fmt.Println("TERIMAKASIH SUDAH MENGGUNAKAN PROGRAM TOKOKU")
 }
