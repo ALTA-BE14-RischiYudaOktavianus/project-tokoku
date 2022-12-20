@@ -9,6 +9,7 @@ import (
 	config "tokoku/config"
 	"tokoku/customer"
 	"tokoku/pegawai"
+	"tokoku/transaksi"
 )
 
 func callClear() {
@@ -24,6 +25,7 @@ func main() {
 	var authAdmMenu = admin.AuthMenu{DB: conn}
 	var authBrgMenu = barang.AuthMenu{DB: conn}
 	var authCustMenu = customer.AuthMenu{DB: conn}
+	var authTransMenu = transaksi.AuthMenu{DB: conn}
 	var isRunning bool = true
 	for isRunning {
 		fmt.Print("=========Program TOKOKU=========")
@@ -79,7 +81,20 @@ func main() {
 							}
 						case 2:
 							{
-
+								fmt.Print("=========Program TOKOKU=========")
+								var deleteTrans transaksi.Transaksi
+								fmt.Println("\nmasukkan id transaksi yang akan diHapus :")
+								fmt.Scanln(&deleteTrans.ID)
+								res, err := authTransMenu.DeleteTransaksi(deleteTrans)
+								if err != nil {
+									fmt.Println(err.Error())
+								}
+								if res {
+									fmt.Println("Sukses menghapus Transaksi")
+								} else {
+									fmt.Println("Gagal menghapus Transaksi")
+								}
+								fmt.Println("=========Data Transaksi=========")
 							}
 						case 3:
 							{
