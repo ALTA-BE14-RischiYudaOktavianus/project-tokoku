@@ -31,14 +31,14 @@ func (am *AuthMenu) DuplicateBarang(name string) bool {
 
 func (am *AuthMenu) EditBarang(editBarang Barang) (bool, error) {
 
-	addQry, err := am.DB.Prepare("UPDATE barang set deskripsi=?, nama_pegawai=?  where id= ?")
+	addQry, err := am.DB.Prepare("UPDATE barang set deskripsi=?  where id= ?")
 	// addQry, err := am.DB.Prepare("UPDATE barang set nama_barang, stok_barang, deskripsi, nama_pegawai  where id= ?")
 	if err != nil {
 		log.Println("Update barang prepare", err.Error())
 		return false, errors.New("prepare Edit barang error")
 	}
 
-	res, err := addQry.Exec(editBarang.Deskripsi, editBarang.Nama_Pegawai, editBarang.Id)
+	res, err := addQry.Exec(editBarang.Deskripsi, editBarang.Id)
 	if err != nil {
 		log.Println("Update barang", err.Error())
 		return false, errors.New("Update Barang error")
@@ -60,14 +60,14 @@ func (am *AuthMenu) EditBarang(editBarang Barang) (bool, error) {
 }
 func (am *AuthMenu) UpdateBarang(editBarang Barang) (bool, error) {
 
-	addQry, err := am.DB.Prepare("UPDATE barang set stok_barang=?, nama_pegawai=?  where id= ?")
+	addQry, err := am.DB.Prepare("UPDATE barang set stok_barang=? where id= ?")
 	// addQry, err := am.DB.Prepare("UPDATE barang set nama_barang, stok_barang, deskripsi, nama_pegawai  where id= ?")
 	if err != nil {
 		log.Println("Update barang prepare", err.Error())
 		return false, errors.New("prepare Edit barang error")
 	}
 
-	res, err := addQry.Exec(editBarang.Stock, editBarang.Nama_Pegawai, editBarang.Id)
+	res, err := addQry.Exec(editBarang.Stock, editBarang.Id)
 	if err != nil {
 		log.Println("Update barang", err.Error())
 		return false, errors.New("Update Barang error")
@@ -122,36 +122,37 @@ func (am *AuthMenu) Barang(newBarang Barang) (bool, error) {
 	return true, nil
 }
 
-// func (am *AuthMenu) DeleteBarang(db *sql.DB, barang Barang, Id int) (entity.Barang, error) {
-// 	usr := db.QueryRow("SELECT id, nama_barang, stock_barang, deskripsi, nama_pegawai from barang where id=?", barang.Nama_Barang)
+func (am *AuthMenu) Deletebarang(deleteBarang Barang) (bool, error) {
 
-// 	var rowUser entity.Barang
-// 	errscan := usr.Scan(&rowUser.Id, &rowUser.Nama_Barang, &rowUser.Stock)
-// 	fmt.Println(rowUser.Id)
-// 	var query = "DELETE FROM barang(id,nama_barang,stock_barang,nama_pegawai) VALUES (?,?,?,?)"
-// 	statement, errPrepare := am.DB.Prepare(query)
-// 	if errPrepare != nil {
-// 		log.Fatal("erorr prepare delete", errPrepare.Error())
+	registerQry, err := am.DB.Prepare("DELETE FROM barang WHERE id=?")
+	if err != nil {
+		log.Println("prepare delete barang ", err.Error())
+		return false, errors.New("prepare statement delete barang error")
+	}
 
-// 	}
+	if am.DuplicateBarang(deleteBarang.Nama_Barang) {
+		log.Println("duplicated information")
+		return false, errors.New("nama barang sudah tidak digunakan")
+	}
 
-// 	result, errExec := statement.Exec(Id, barang.Nama_Barang)
-// 	if errExec != nil {
-// 		log.Fatal("erorr Exec delete", errExec.Error())
-// 	} else {
-// 		row, _ := result.RowsAffected()
-// 		if row > 0 {
-// 			fmt.Println("barang yang berhasil dihapus")
-// 		} else {
-// 			fmt.Println("gagal dihapus")
-// 		}
-// 	}
+	// menjalankan query dengan parameter tertentu
+	res, err := registerQry.Exec(deleteBarang.Id)
+	if err != nil {
+		log.Println("delete barang ", err.Error())
+		return false, errors.New("delete barang error")
+	}
+	// Cek berapa baris yang terpengaruh query diatas
+	affRows, err := res.RowsAffected()
 
-// 	if errscan != nil {
-// 		if errscan == sql.ErrNoRows {
-// 			log.Fatal("error scan", errscan.Error())
-// 		}
-// 	}
-// 	return rowUser, nil
+	if err != nil {
+		log.Println("after Delete barang ", err.Error())
+		return false, errors.New("error setelah Delete")
+	}
 
-// }
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
+	}
+
+	return true, nil
+}

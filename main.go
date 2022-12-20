@@ -50,7 +50,7 @@ func main() {
 					var isRunning2 bool = true
 					for isRunning2 {
 						fmt.Print("=========Program Activity Sederhana=========")
-						fmt.Print("\nPILIHAN anda:\n1. Tambah Pegawai \n2. Delete Transaksi \n3. Delete Pegawai \n4. Delete Barang \n9. Logout\n")
+						fmt.Print("\nPILIHAN anda:\n1. Tambah Pegawai \n2. Delete Transaksi \n3. Delete Customer \n4. Delete Barang \n5. Delete Pegawai \n9. Logout\n")
 						fmt.Println("=========Masukkan Pilihan Anda=========")
 						var pilihan int
 						fmt.Scanln(&pilihan)
@@ -83,11 +83,54 @@ func main() {
 							}
 						case 3:
 							{
-
+								fmt.Print("=========Program TOKOKU=========")
+								var deleteCust customer.Customer
+								fmt.Println("\nmasukkan id customer yang akan diHapus :")
+								fmt.Scanln(&deleteCust.Id)
+								res, err := authCustMenu.DeleteCustomer(deleteCust)
+								if err != nil {
+									fmt.Println(err.Error())
+								}
+								if res {
+									fmt.Println("Sukses menghapus Customer")
+								} else {
+									fmt.Println("Gagal menghapus Customer")
+								}
+								fmt.Println("=========Data Customer=========")
 							}
 						case 4:
 							{
-
+								fmt.Print("=========Program TOKOKU=========")
+								var deleteBarang barang.Barang
+								fmt.Println("\nmasukkan id barang yang akan diHapus :")
+								fmt.Scanln(&deleteBarang.Id)
+								res, err := authBrgMenu.Deletebarang(deleteBarang)
+								if err != nil {
+									fmt.Println(err.Error())
+								}
+								if res {
+									fmt.Println("Sukses menghapus Barang")
+								} else {
+									fmt.Println("Gagal menghapus Barang")
+								}
+								fmt.Println("=========Data Barang=========")
+							}
+						case 5:
+							{
+								fmt.Print("=========Program TOKOKU=========")
+								var deletePegawai pegawai.Pegawai
+								fmt.Println("\nmasukkan id barang yang akan diHapus :")
+								fmt.Scanln(&deletePegawai.ID)
+								res, err := authMenu.DeletePegawai(deletePegawai)
+								if err != nil {
+									fmt.Println(err.Error())
+								}
+								if res {
+									fmt.Println("Sukses menghapus Pegawai")
+								} else {
+									fmt.Println("Gagal menghapus Pegawai")
+								}
+								fmt.Println("=========Data Pegawai=========")
 							}
 						case 9:
 							callClear()
