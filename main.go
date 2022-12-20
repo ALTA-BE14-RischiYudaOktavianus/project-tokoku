@@ -139,7 +139,7 @@ func main() {
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menghapus Pegawai=========")
 								var deletePegawai pegawai.Pegawai
-								fmt.Println("\nmasukkan id barang yang akan diHapus :")
+								fmt.Println("\nmasukkan id Pegawai yang akan diHapus :")
 								fmt.Scanln(&deletePegawai.ID)
 								res, err := authMenu.DeletePegawai(deletePegawai)
 								if err != nil {

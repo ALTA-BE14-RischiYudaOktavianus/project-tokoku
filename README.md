@@ -40,6 +40,20 @@ git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git
 3. Lalu silahkan input username dan Password. Jika sebagai ADMIN maka akan muncul menu seperti gambar:
 ![contoh](./dokumentasi/daftarmenuadmin.png)
 
+4. Jika input 1 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/menambahkanpegawai.png)
+
+5. Jika input 2 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/menghapustransaksi.png)
+
+6. Jika input 3 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/menghapuscustomer.png)
+
+7. Jika input 4 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/menghapusbarang.png)
+
+8. Jika input 5 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/menghapuspegawai.png)
 
 ## *Menu PEGAWAI*
 1. Untuk melakukan run program lakukan seperti contoh dibawah ini: 
@@ -51,3 +65,18 @@ git@github.com:ALTA-BE14-RischiYudaOktavianus/project-tokoku.git
 
 3. Lalu silahkan input username dan Password. Jika sebagai PEGAWAI maka akan muncul menu seperti gambar:
 ![contoh](./dokumentasi/daftarmenupegawai.png)
+
+4. Jika input 1 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/menambahkancustomer.png)
+
+5. Jika input 2 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/menambahkanbarang.png)
+
+6. Jika input 3 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/mengupdatedatabarang.png)
+
+7. Jika input 4 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/mengupdatestokbarang.png)
+
+8. Jika input 5 maka akan muncul menu seperti gambar:
+![contoh](./dokumentasi/membuattransaksi.png)
