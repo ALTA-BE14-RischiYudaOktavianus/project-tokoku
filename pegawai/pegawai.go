@@ -78,18 +78,28 @@ func (am *AuthMenu) Ceklogin(name string) bool {
 	return true
 }
 
-func (am *AuthMenu) Login(newUser Pegawai) (bool, int, error) {
-	res := am.DB.QueryRow("SELECT id FROM pegawai where username = ? and password = ?", newUser.Username, newUser.Password)
-	var idExist int
-	err := res.Scan(&idExist)
+func (am *AuthMenu) Login(newUser string, Password string) (Pegawai, error) {
+	loginQry, err := am.DB.Prepare("SELECT id FROM pegawai where nama_pegawai = ? and password = ?")
 	if err != nil {
-		if err.Error() != "sql error" {
-			log.Println("Result scan error", err.Error())
-			return false, 0, errors.New("result scan errorz")
-		}
+		log.Println("prepare insert user ", err.Error())
+		return Pegawai{}, errors.New("prepare statement insert user error")
 	}
-	if idExist > 0 {
-		return true, idExist, nil
+
+	row := loginQry.QueryRow(newUser, Password)
+
+	if row.Err() != nil {
+		log.Println("login query ", row.Err().Error())
+		return Pegawai{}, errors.New("tidak bisa login, data tidak ditemukan")
 	}
-	return false, idExist, errors.New("username and password is salah")
+	res := Pegawai{}
+	err = row.Scan(&res.ID)
+
+	if err != nil {
+		log.Println("after login query ", err.Error())
+		return Pegawai{}, errors.New("tidak bisa login, kesalahan setelah error")
+	}
+
+	res.Username = newUser
+
+	return res, nil
 }
