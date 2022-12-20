@@ -83,6 +83,7 @@ func main() {
 						case 2:
 							{
 								fmt.Print("=========Program TOKOKU=========")
+								fmt.Print("\n=========Menu Menghapus Transaksi=========")
 								var deleteTrans transaksi.Transaksi
 								fmt.Println("\nmasukkan id transaksi yang akan diHapus :")
 								fmt.Scanln(&deleteTrans.ID)
