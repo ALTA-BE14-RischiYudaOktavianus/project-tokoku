@@ -137,13 +137,13 @@ func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 }
 
 func (am *AuthMenu) CetakNota(newCetak Transaksi) (bool, error) {
-	addQry, err := am.DB.Prepare("INSERT into barang_has_transaksi (barang_id, transaksi_id, total_qty) VALUES (?, ?, ?)")
+	addQry, err := am.DB.Prepare("SELECT barang_has_transaksi.total_qty, barang_has_transaksi.barang_id,  transaksi.id, customer.nama_cust as pelanggan, transaksi.tanggal_transaksi,transaksi.id_pegawai,p.nama_pegawai as pegawai FROM transaksi INNER JOIN customer on customer.id = transaksi.id_customer INNER JOIN pegawai p on transaksi.id_pegawai = p.id Left join barang_has_transaksi on barang_has_transaksi.transaksi_id = transaksi.id WHERE transaksi.id_customer = ?")
 	if err != nil {
 		log.Println("Select Cetak prepare", err.Error())
 		return false, errors.New("prepare Select Cetak error")
 	}
 
-	res, err := addQry.Exec(newCetak.ID, newCetak.Total_Qty, newCetak.Tanggal_Transaksi, newCetak.ID_Pegawai, newCetak.ID_Barang, newCetak.ID_Customer)
+	res, err := addQry.Exec(newCetak.ID_Customer)
 	if err != nil {
 		log.Println("Select cetak", err.Error())
 		return false, errors.New("Select Cetak error")
