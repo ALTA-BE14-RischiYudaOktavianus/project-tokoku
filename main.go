@@ -323,7 +323,24 @@ func main() {
 							case 6:
 								{
 									fmt.Print("=========Program TOKOKU=========")
-									fmt.Println("\n=========Cetak Nota Transaksi=========")
+									var newTransaksi transaksi.Transaksi
+									fmt.Println("\n=========Nota Transaksi=========")
+									fmt.Print("\n Tanggal Transaksi		:", "<", newTransaksi.Tanggal_Transaksi, ">")
+									fmt.Print("\n Kasir Transaksi		:", "<", newTransaksi.ID_Pegawai, ">")
+									fmt.Print("\n Barang Transaksi		:", "<", newTransaksi.ID_Barang, ">")
+									fmt.Print("\n Jumlah Barang			:", "<", newTransaksi.Total_Qty, ">")
+									fmt.Print("\n Customer				:", "<", newTransaksi.ID_Customer, ">")
+									fmt.Println("=========Nota Transaksi TOKOKU=========")
+
+									res, err := authTransMenu.CetakNota(newTransaksi)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+									if res {
+										fmt.Println("TRANSAKSI SUKSES")
+									} else {
+										fmt.Println("TRANSAKSI GAGAL")
+									}
 
 									fmt.Println("=========Transaksi=========")
 								}

@@ -102,3 +102,31 @@ func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 
 	return true, nil
 }
+
+func (am *AuthMenu) CetakNota(newCetak Transaksi) (bool, error) {
+	addQry, err := am.DB.Prepare("INSERT into barang_has_transaksi (barang_id, transaksi_id, total_qty) VALUES (?, ?, ?)")
+	if err != nil {
+		log.Println("Select Cetak prepare", err.Error())
+		return false, errors.New("prepare Select Cetak error")
+	}
+
+	res, err := addQry.Exec(newCetak.ID, newCetak.Total_Qty, newCetak.Tanggal_Transaksi, newCetak.ID_Pegawai, newCetak.ID_Barang, newCetak.ID_Customer)
+	if err != nil {
+		log.Println("Select cetak", err.Error())
+		return false, errors.New("Select Cetak error")
+	}
+
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after Select Cetak", err.Error())
+		return false, errors.New("after Select cetak error")
+	}
+
+	if affRows <= 0 {
+		log.Println("No record affected")
+		return true, errors.New("No record")
+	}
+
+	return true, nil
+}
