@@ -375,6 +375,7 @@ func main() {
 									fmt.Println("=========Transaksi=========")
 								}
 							case 9:
+								// Menu logout dari akun pegawai
 								callClear()
 								isRunning2 = false
 							}
@@ -387,6 +388,7 @@ func main() {
 				}
 			}
 		case 0:
+			// Menu exit dari program TOKOKU
 			{
 				callClear()
 				isRunning = false
