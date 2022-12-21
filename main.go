@@ -257,31 +257,68 @@ func main() {
 								}
 							case 5:
 								{
-									fmt.Print("=========Program TOKOKU=========")
-									fmt.Print("\n=========Menu Transaksi=========")
-									var newTransaksi transaksi.Transaksi
-									fmt.Println("\nMasukkan ID Barang: ")
-									fmt.Scanln(&newTransaksi.Nama_Barang)
-									fmt.Println("\nJumlah Barang: ")
-									fmt.Scanln(&newTransaksi.Total_Qty)
-									fmt.Println("\nMasukkan ID Customer: ")
-									fmt.Scanln(&newTransaksi.Nama_Customer)
-									fmt.Println("\nMasukkan ID Pegawai: ")
-									fmt.Scanln(&newTransaksi.Nama_Pegawai)
-									fmt.Println("\nMasukkanTanggal Transaksi")
-									fmt.Println("\nTuliskan dengan format: YYYY-MM-DD")
-									fmt.Scanln(&newTransaksi.Tanggal_Transaksi)
+									var isRun bool = true
+									for isRun {
+										fmt.Print("=========Program TOKOKU=========")
+										fmt.Print("\nPILIHAN anda:\n1. Tambah Transaksi \n2. Tambah jumlah Barang \n0. HOME\n")
+										fmt.Println("=========Masukkan Pilihan Anda=========")
+										var choice2 int
+										fmt.Scanln(&choice2)
 
-									res, err := authTransMenu.AddTransaksi(newTransaksi)
-									if err != nil {
-										fmt.Println(err.Error())
+										callClear()
+										switch choice2 {
+										case 1:
+											{
+												fmt.Print("=========Program TOKOKU=========")
+												fmt.Print("\n=========Menu Tambah Transaksi=========")
+												var newTransaksi transaksi.Transaksi
+												fmt.Println("\nMasukkan ID Customer: ")
+												fmt.Scanln(&newTransaksi.ID_Customer)
+												fmt.Println("\nMasukkan ID Pegawai: ")
+												fmt.Scanln(&newTransaksi.ID_Pegawai)
+
+												res, err := authTransMenu.AddTransaksi(newTransaksi)
+												if err != nil {
+													fmt.Println(err.Error())
+												}
+												if res {
+													fmt.Println("TRANSAKSI SUKSES")
+												} else {
+													fmt.Println("TRANSAKSI GAGAL")
+												}
+												fmt.Println("=========Transaksi=========")
+											}
+										case 2:
+											{
+												fmt.Print("=========Program TOKOKU=========")
+												fmt.Print("\n=========Menu Tambah Transaksi=========")
+												var newTransaksi transaksi.Transaksi
+												fmt.Println("\nMasukkan ID Transaksi: ")
+												fmt.Scanln(&newTransaksi.ID)
+												fmt.Println("\nMasukkan ID Barang: ")
+												fmt.Scanln(&newTransaksi.ID_Barang)
+												fmt.Println("\nJumlah Barang: ")
+												fmt.Scanln(&newTransaksi.Total_Qty)
+
+												res, err := authTransMenu.AddQTY(newTransaksi)
+												if err != nil {
+													fmt.Println(err.Error())
+												}
+												if res {
+													fmt.Println("TRANSAKSI SUKSES")
+												} else {
+													fmt.Println("TRANSAKSI GAGAL")
+												}
+												fmt.Println("=========Transaksi=========")
+											}
+										case 0:
+											{
+												callClear()
+												isRun = false
+
+											}
+										}
 									}
-									if res {
-										fmt.Println("TRANSAKSI SUKSES")
-									} else {
-										fmt.Println("TRANSAKSI GAGAL")
-									}
-									fmt.Println("=========Transaksi=========")
 								}
 							case 6:
 								{
