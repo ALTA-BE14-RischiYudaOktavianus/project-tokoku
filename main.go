@@ -325,12 +325,13 @@ func main() {
 									fmt.Print("=========Program TOKOKU=========")
 									var newTransaksi transaksi.Transaksi
 									fmt.Println("\n=========Nota Transaksi=========")
+									fmt.Print("\n No Transaksi			:", "<", newTransaksi.ID, ">")
 									fmt.Print("\n Tanggal Transaksi		:", "<", newTransaksi.Tanggal_Transaksi, ">")
 									fmt.Print("\n Kasir Transaksi		:", "<", newTransaksi.ID_Pegawai, ">")
 									fmt.Print("\n Barang Transaksi		:", "<", newTransaksi.ID_Barang, ">")
 									fmt.Print("\n Jumlah Barang			:", "<", newTransaksi.Total_Qty, ">")
-									fmt.Print("\n Customer				:", "<", newTransaksi.ID_Customer, ">")
-									fmt.Println("=========Nota Transaksi TOKOKU=========")
+									fmt.Print("\n Customer			:", "<", newTransaksi.ID_Customer, ">")
+									fmt.Println("\n=========Nota Transaksi TOKOKU=========")
 
 									res, err := authTransMenu.CetakNota(newTransaksi)
 									if err != nil {

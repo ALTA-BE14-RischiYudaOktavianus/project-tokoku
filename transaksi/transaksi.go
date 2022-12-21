@@ -8,16 +8,49 @@ import (
 
 type Transaksi struct {
 	ID                int
-	Total_Qty         string
+	Total_Qty         int
 	Tanggal_Transaksi string
-	ID_Pegawai        string
-	ID_Barang         string
-	ID_Customer       string
+	ID_Pegawai        int
+	ID_Barang         int
+	ID_Customer       int
 }
 
 type AuthMenu struct {
 	DB *sql.DB
 }
+
+// func (am *AuthMenu) Stock(kurangQty  string) bool {
+// 	var kuantitas Transaksi
+// 	var transfer barang.Barang
+// 	if kuantitas.Total_Qty > transfer.Stock {
+// 		fmt.Println("Stock Anda Tidak Mencukupi")
+// 	}
+
+// 	var terima Transaksi
+// 	Stock := transfer.Stock - kuantitas.Total_Qty
+// 	Stock2 := terima.Total_Qty + kuantitas.Total_Qty
+
+// 	ress, err := addQry.Exec(Stock, transfer.Stock)
+// 	if err != nil {
+// 		log.Println("Gagal line 69", err.Error())
+// 	}
+// 	affRows, err := ress.RowsAffected()
+
+// 	_, err = addQry.Exec(Stock2, terima.Total_Qty)
+// 	if err != nil {
+// 		log.Println("Gagal line 74", err.Error())
+// 	}
+// 	res := am.DB.QueryRow("SELECT id FROM pegawai where nama_pegawai = ?", name)
+
+// 	var idExist int
+// 	err := res.Scan(&idExist)
+// 	if err != nil {
+// 		log.Println("Result scan error", err.Error())
+// 		return false
+// 	}
+// 	return true
+
+// }
 
 func (am *AuthMenu) AddTransaksi(newTransaksi Transaksi) (bool, error) {
 	addQry, err := am.DB.Prepare("INSERT into transaksi (id_pegawai, id_customer) VALUES (?, ?)")
