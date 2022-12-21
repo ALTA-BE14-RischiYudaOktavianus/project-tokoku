@@ -28,7 +28,7 @@ func (am *AuthMenu) DuplicateCustomer(name string) bool {
 
 func (am *AuthMenu) Customer(newUser Customer) (bool, error) {
 	// menyiapakn query untuk insert
-	registerQry, err := am.DB.Prepare("INSERT INTO customer (nama_cust, nama_pegawai) values (?,?)")
+	registerQry, err := am.DB.Prepare("INSERT INTO customer (nama_cust, id_pegawai) values (?,?)")
 	if err != nil {
 		log.Println("prepare insert cust ", err.Error())
 		return false, errors.New("prepare statement insert cust error")

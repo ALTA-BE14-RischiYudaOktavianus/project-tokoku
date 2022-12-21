@@ -74,7 +74,7 @@ func (am *AuthMenu) Register(newUser Pegawai) (bool, error) {
 }
 
 func (am *AuthMenu) Login(nama_pegawai string, password string) (Pegawai, error) {
-	loginQry, err := am.DB.Prepare("SELECT id FROM pegawai WHERE username = ? AND password = ?")
+	loginQry, err := am.DB.Prepare("SELECT id FROM pegawai WHERE nama_pegawai = ? AND password = ?")
 	if err != nil {
 		log.Println("prepare insert user ", err.Error())
 		return Pegawai{}, errors.New("prepare statement insert user error")

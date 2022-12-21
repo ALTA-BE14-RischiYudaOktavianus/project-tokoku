@@ -35,7 +35,7 @@ func (am *AuthMenu) Duplicate(name string) bool {
 
 func (am *AuthMenu) Register(newUser Pegawai) (bool, error) {
 	// menyiapakn query untuk insert
-	registerQry, err := am.DB.Prepare("INSERT INTO pegawai (username, password) values (?,?)")
+	registerQry, err := am.DB.Prepare("INSERT INTO pegawai (nama_pegawai, password) values (?,?)")
 	if err != nil {
 		log.Println("prepare insert user ", err.Error())
 		return false, errors.New("prepare statement insert user error")
@@ -68,7 +68,7 @@ func (am *AuthMenu) Register(newUser Pegawai) (bool, error) {
 	return true, nil
 }
 func (am *AuthMenu) Ceklogin(name string) bool {
-	res := am.DB.QueryRow("SELECT id FROM pegawai where username = ?", name)
+	res := am.DB.QueryRow("SELECT id FROM pegawai where nama_pegawai = ?", name)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {

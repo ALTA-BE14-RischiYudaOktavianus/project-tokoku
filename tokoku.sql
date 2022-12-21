@@ -46,26 +46,16 @@ CONSTRAINT FK_nama_cust FOREIGN KEY(id_customer) REFERENCES customer(id),
 CONSTRAINT FK_nama_barang FOREIGN KEY(id_barang) REFERENCES barang(id)
 );
 
-CREATE TABLE IF NOT EXISTS `tokoku`.`barang_has_transaksi` (
-  `barang_id` INT NOT NULL,
-  `transaksi_id` INT NOT NULL,
-  `total_qty` INT NOT NULL,
-  PRIMARY KEY (`barang_id`, `transaksi_id`),
-  INDEX `fk_barang_has_transaksi_transaksi1_idx` (`transaksi_id` ASC) VISIBLE,
-  INDEX `fk_barang_has_transaksi_barang1_idx` (`barang_id` ASC) VISIBLE,
-  CONSTRAINT `fk_barang_has_transaksi_barang1`
-    FOREIGN KEY (`barang_id`)
-    REFERENCES `tokoku`.`barang` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_barang_has_transaksi_transaksi1`
-    FOREIGN KEY (`transaksi_id`)
-    REFERENCES `tokoku`.`transaksi` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+CREATE TABLE `barang_has_transaksi` (
+  `barang_id` int NOT NULL,
+  `transaksi_id` int NOT NULL,
+  `total_qty` int NOT NULL,
+  PRIMARY KEY (`barang_id`,`transaksi_id`),
+  KEY `fk_barang_has_transaksi_transaksi1_idx` (`transaksi_id`),
+  KEY `fk_barang_has_transaksi_barang1_idx` (`barang_id`),
+  CONSTRAINT `fk_barang_has_transaksi_barang1` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`id`),
+  CONSTRAINT `fk_barang_has_transaksi_transaksi1` FOREIGN KEY (`transaksi_id`) REFERENCES `transaksi` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO pegawai(nama_pegawai, password)
 Values("admin", "admin");
