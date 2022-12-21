@@ -89,7 +89,7 @@ func (am *AuthMenu) UpdateBarang(editBarang Barang) (bool, error) {
 }
 func (am *AuthMenu) Barang(newBarang Barang) (bool, error) {
 
-	registerQry, err := am.DB.Prepare("INSERT INTO barang(nama_barang,stok_barang,deskripsi,nama_pegawai) VALUES (?,?,?,?)")
+	registerQry, err := am.DB.Prepare("INSERT INTO barang(nama_barang,stok_barang,deskripsi,id_pegawai) VALUES (?,?,?,?)")
 	if err != nil {
 		log.Println("prepare insert barang ", err.Error())
 		return false, errors.New("prepare statement insert barang error")

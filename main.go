@@ -260,17 +260,17 @@ func main() {
 									fmt.Print("=========Program TOKOKU=========")
 									fmt.Print("\n=========Menu Transaksi=========")
 									var newTransaksi transaksi.Transaksi
-									fmt.Println("\nNama Barang: ")
+									fmt.Println("\nMasukkan ID Barang: ")
 									fmt.Scanln(&newTransaksi.Nama_Barang)
 									fmt.Println("\nJumlah Barang: ")
 									fmt.Scanln(&newTransaksi.Total_Qty)
-									fmt.Println("\nNama Customer: ")
+									fmt.Println("\nMasukkan ID Customer: ")
 									fmt.Scanln(&newTransaksi.Nama_Customer)
-									fmt.Println("\nNama Pegawai: ")
+									fmt.Println("\nMasukkan ID Pegawai: ")
 									fmt.Scanln(&newTransaksi.Nama_Pegawai)
-									// fmt.Println("Tanggal Transaksi")
-									// fmt.Println("Tuliskan dengan format: YYYY-MM-DD")
-									// fmt.Scanln(&newTransaksi.Tanggal_Transaksi)
+									fmt.Println("\nMasukkanTanggal Transaksi")
+									fmt.Println("\nTuliskan dengan format: YYYY-MM-DD")
+									fmt.Scanln(&newTransaksi.Tanggal_Transaksi)
 
 									res, err := authTransMenu.AddTransaksi(newTransaksi)
 									if err != nil {

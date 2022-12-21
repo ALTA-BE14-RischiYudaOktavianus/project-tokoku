@@ -20,7 +20,7 @@ type AuthMenu struct {
 }
 
 func (am *AuthMenu) AddTransaksi(newTransaksi Transaksi) (bool, error) {
-	addQry, err := am.DB.Prepare("INSERT into transaksi (total_qty, tanggal_transaksi, nama_pegawai, nama_barang, nama_customer) VALUES (?, ?, ?, ?, ?)")
+	addQry, err := am.DB.Prepare("INSERT into transaksi (total_qty, tanggal_transaksi, id_pegawai, id_barang, id_customer) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		log.Println("Insert transaksi prepare", err.Error())
 		return false, errors.New("prepare Insert transaksi error")
