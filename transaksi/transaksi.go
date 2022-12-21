@@ -10,9 +10,9 @@ type Transaksi struct {
 	ID                int
 	Total_Qty         string
 	Tanggal_Transaksi string
-	Nama_Pegawai      string
-	Nama_Barang       string
-	Nama_Customer     string
+	ID_Pegawai        string
+	ID_Barang         string
+	ID_Customer       string
 }
 
 type AuthMenu struct {
@@ -20,13 +20,13 @@ type AuthMenu struct {
 }
 
 func (am *AuthMenu) AddTransaksi(newTransaksi Transaksi) (bool, error) {
-	addQry, err := am.DB.Prepare("INSERT into transaksi (total_qty, tanggal_transaksi, id_pegawai, id_barang, id_customer) VALUES (?, ?, ?, ?, ?)")
+	addQry, err := am.DB.Prepare("INSERT into transaksi (id_pegawai, id_customer) VALUES (?, ?)")
 	if err != nil {
 		log.Println("Insert transaksi prepare", err.Error())
 		return false, errors.New("prepare Insert transaksi error")
 	}
 
-	res, err := addQry.Exec(newTransaksi.Total_Qty, newTransaksi.Tanggal_Transaksi, newTransaksi.Nama_Pegawai, newTransaksi.Nama_Barang, newTransaksi.Nama_Customer)
+	res, err := addQry.Exec(newTransaksi.ID_Pegawai, newTransaksi.ID_Customer)
 	if err != nil {
 		log.Println("insert transaksi", err.Error())
 		return false, errors.New("Insert transaksi error")
@@ -46,7 +46,33 @@ func (am *AuthMenu) AddTransaksi(newTransaksi Transaksi) (bool, error) {
 
 	return true, nil
 }
+func (am *AuthMenu) AddQTY(newQty Transaksi) (bool, error) {
+	addQry, err := am.DB.Prepare("INSERT into barang_has_transaksi (barang_id, transaksi_id, total_qty) VALUES (?, ?, ?)")
+	if err != nil {
+		log.Println("Insert QTY prepare", err.Error())
+		return false, errors.New("prepare Insert QTY error")
+	}
 
+	res, err := addQry.Exec(newQty.ID_Barang, newQty.ID, newQty.Total_Qty)
+	if err != nil {
+		log.Println("insert QTY", err.Error())
+		return false, errors.New("Insert QTY error")
+	}
+
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after insert QTY", err.Error())
+		return false, errors.New("after Insert QTY error")
+	}
+
+	if affRows <= 0 {
+		log.Println("No record affected")
+		return true, errors.New("No record")
+	}
+
+	return true, nil
+}
 func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 
 	registerQry, err := am.DB.Prepare("DELETE FROM transaksi WHERE id=?")
