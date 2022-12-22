@@ -3,6 +3,7 @@ package customer
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -94,4 +95,23 @@ func (am *AuthMenu) DeleteCustomer(deleteCustomer Customer) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (am *AuthMenu) SearchCus(id int) (liatcus []Customer) {
+	var strBarang string
+	rows, e := am.DB.Query(`SELECT id, nama_cust FROM customer;`)
+
+	if e != nil {
+		log.Println(e)
+		return
+	}
+
+	liatcus = make([]Customer, 0)
+	for rows.Next() {
+		row := Customer{}
+		rows.Scan(&row.Id, &row.Nama_Customer)
+		strBarang += fmt.Sprintf("ID: %d (%s)\n", row.Id, row.Nama_Customer)
+		liatcus = append(liatcus, row)
+	}
+	return liatcus
 }

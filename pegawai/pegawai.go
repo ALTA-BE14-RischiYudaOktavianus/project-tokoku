@@ -3,6 +3,7 @@ package pegawai
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -132,4 +133,23 @@ func (am *AuthMenu) DeletePegawai(deletePegawai Pegawai) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (am *AuthMenu) SearchPeg(id int) (liatpeg []Pegawai) {
+	var strBarang string
+	rows, e := am.DB.Query(`SELECT id, nama_pegawai FROM pegawai;`)
+
+	if e != nil {
+		log.Println(e)
+		return
+	}
+
+	liatpeg = make([]Pegawai, 0)
+	for rows.Next() {
+		row := Pegawai{}
+		rows.Scan(&row.ID, &row.Username)
+		strBarang += fmt.Sprintf("ID: %d (%s)\n", row.ID, row.Username)
+		liatpeg = append(liatpeg, row)
+	}
+	return liatpeg
 }

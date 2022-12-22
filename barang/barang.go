@@ -3,6 +3,7 @@ package barang
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -155,4 +156,61 @@ func (am *AuthMenu) Deletebarang(deleteBarang Barang) (bool, error) {
 	}
 
 	return true, nil
+}
+func (am *AuthMenu) SearchBarang(id int) (liatBarang []Barang) {
+	var strBarang string
+	rows, e := am.DB.Query(
+		`SELECT id,
+		nama_barang,
+		stok_barang, deskripsi, id_pegawai
+		FROM barang;`)
+
+	if e != nil {
+		log.Println(e)
+		return
+	}
+
+	liatBarang = make([]Barang, 0)
+	for rows.Next() {
+		row := Barang{}
+		rows.Scan(&row.Id, &row.Nama_Barang, &row.Stock, &row.Deskripsi, &row.Nama_Pegawai)
+		strBarang += fmt.Sprintf("ID: %d %s (%d) (%s) <%d>\n", row.Id, row.Nama_Barang, row.Stock, row.Deskripsi, row.Nama_Pegawai)
+		liatBarang = append(liatBarang, row)
+	}
+	return liatBarang
+}
+func (am *AuthMenu) Data(id int) ([]Barang, string, error) {
+	var (
+		selectBarangQry *sql.Rows
+		err             error
+		strBarang       string
+	)
+	if id == 0 {
+		selectBarangQry, err = am.DB.Query(`
+	 SELECT b.id ,b.id_pegawai ,b.nama_barang "Nama Barang" ,b.stok_barang ,b.deskripsi,p.nama_pegawai 'Nama Pegawai'
+	 FROM barang b
+	 JOIN pegawai p ON p.id = b.id_pegawai;`)
+	} else {
+		selectBarangQry, err = am.DB.Query(`
+		SELECT b.id ,b.id_pegawai ,b.nama_barang "Nama Barang" ,b.stok_barang ,b.deskripsi ,p.nama_pegawai 'Nama Pegawai'
+		FROM barang b, pegawai p
+		WHERE b.id = ?;`, id)
+	}
+
+	if err != nil {
+		log.Println("select barang", err.Error())
+		return nil, strBarang, errors.New("select barang error")
+	}
+	arrBarang := []Barang{}
+	for selectBarangQry.Next() {
+		var tmp Barang
+		err = selectBarangQry.Scan(&tmp.Id, &tmp.Nama_Barang, &tmp.Stock, &tmp.Deskripsi, &tmp.Nama_Pegawai)
+		if err != nil {
+			log.Println("Loop through rows, using Scan to assign column data to struct fields", err.Error())
+			return arrBarang, strBarang, err
+		}
+		strBarang += fmt.Sprintf("ID: %d %s (%d) (%s) <%d>\n", tmp.Id, tmp.Nama_Barang, tmp.Stock, tmp.Deskripsi, tmp.Nama_Pegawai)
+		arrBarang = append(arrBarang, tmp)
+	}
+	return arrBarang, strBarang, nil
 }
