@@ -3,6 +3,7 @@ package transaksi
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -136,30 +137,50 @@ func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 	return true, nil
 }
 
-func (am *AuthMenu) CetakNota(newCetak Transaksi) (bool, error) {
+func (am *AuthMenu) CetakNota(id int) (Transaksi, error) {
 	addQry, err := am.DB.Prepare("SELECT barang_has_transaksi.total_qty, barang_has_transaksi.barang_id,  transaksi.id, customer.nama_cust as pelanggan, transaksi.tanggal_transaksi,transaksi.id_pegawai,p.nama_pegawai as pegawai FROM transaksi INNER JOIN customer on customer.id = transaksi.id_customer INNER JOIN pegawai p on transaksi.id_pegawai = p.id Left join barang_has_transaksi on barang_has_transaksi.transaksi_id = transaksi.id WHERE transaksi.id_customer = ?")
 	if err != nil {
 		log.Println("Select Cetak prepare", err.Error())
-		return false, errors.New("prepare Select Cetak error")
+		return Transaksi{}, errors.New("prepare Select Cetak error")
 	}
 
-	res, err := addQry.Exec(newCetak.ID_Customer)
-	if err != nil {
+	res := addQry.QueryRow(id)
+	if res != nil {
 		log.Println("Select cetak", err.Error())
-		return false, errors.New("Select Cetak error")
+		return Transaksi{}, errors.New("Select Cetak error")
 	}
-
-	affRows, err := res.RowsAffected()
+	ress := Transaksi{}
+	err = res.Scan(&ress.ID_Customer)
 
 	if err != nil {
 		log.Println("after Select Cetak", err.Error())
-		return false, errors.New("after Select cetak error")
+		return Transaksi{}, errors.New("after Select cetak error")
 	}
 
-	if affRows <= 0 {
-		log.Println("No record affected")
-		return true, errors.New("No record")
+	ress.ID_Customer = id
+	return ress, nil
+
+}
+
+func (am *AuthMenu) SearchTrans(id int) (liatTrans []Transaksi) {
+	var strBarang string
+	rows, e := am.DB.Query(
+		`SELECT id,
+		nama_barang,
+		stok_barang, deskripsi, id_pegawai
+		FROM barang;`)
+
+	if e != nil {
+		log.Println(e)
+		return
 	}
 
-	return true, nil
+	liatTrans = make([]Transaksi, 0)
+	for rows.Next() {
+		row := Transaksi{}
+		rows.Scan(&row.ID, &row.Total_Qty, &row.Tanggal_Transaksi, &row.ID_Pegawai, &row.ID_Barang, &row.ID_Customer)
+		strBarang += fmt.Sprintf("ID: %d %d %s (%d) (%d) <%d>\n", row.ID, row.Total_Qty, row.Tanggal_Transaksi, row.ID_Pegawai, row.ID_Barang, row.ID_Customer)
+		liatTrans = append(liatTrans, row)
+	}
+	return liatTrans
 }
