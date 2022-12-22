@@ -19,10 +19,10 @@ func callClear() {
 }
 
 func main() {
-	// membuat variable untuk membaca config
+
 	var cfg = config.ReadConfig()
 	var conn = config.ConnectSQL(*cfg)
-	// variabel pembantu disetiap program
+
 	var authMenu = pegawai.AuthMenu{DB: conn}
 	var authAdmMenu = admin.AuthMenu{DB: conn}
 	var authBrgMenu = barang.AuthMenu{DB: conn}
@@ -30,7 +30,7 @@ func main() {
 	var authTransMenu = transaksi.AuthMenu{DB: conn}
 	var isRunning bool = true
 	for isRunning {
-		// Menu login untuk admin maupun pegawai dan exit 
+
 		fmt.Print("=========Program TOKOKU=========")
 		fmt.Print("\nPILIHAN Menu:\n1. Login \n0. Exit\n")
 		fmt.Println("=========Masukkan menu Pilihan Anda=========")
@@ -51,7 +51,7 @@ func main() {
 					fmt.Println(err.Error())
 				}
 				if res.ID == 1 {
-					// ketika kita masuk menggunakan akun Admin maka akan muncul menu sebagai berikut
+
 					fmt.Println("Sukses Login", "selamat datang", Username)
 					var isRunning2 bool = true
 					for isRunning2 {
@@ -65,7 +65,7 @@ func main() {
 						switch pilihan {
 						case 1:
 							{
-								// Menu dibawah ini merupakan menu Admin untuk menambahkan pegawai.
+
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menambahkan Pegawai=========")
 								var newUser admin.Pegawai
@@ -87,8 +87,7 @@ func main() {
 							}
 						case 2:
 							{
-								// Menu dibawah ini merupakan menu Admin untuk 
-								// menghapus transaksi yang sudah dibuat oleh pegawai.
+
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menghapus Transaksi=========")
 								var deleteTrans transaksi.Transaksi
@@ -107,8 +106,7 @@ func main() {
 							}
 						case 3:
 							{
-								// Menu dibawah ini merupakan menu Admin untuk
-								// menghapus data customer yang sudah dibuat oleh pegawai.
+
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menghapus Customer=========")
 								var deleteCust customer.Customer
@@ -127,8 +125,7 @@ func main() {
 							}
 						case 4:
 							{
-								// Menu dibawah ini merupakan menu Admin untuk
-								// menghapus data barang di database yang sudah dibuat oleh pegawai.
+
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menghapus Barang=========")
 								var deleteBarang barang.Barang
@@ -147,8 +144,7 @@ func main() {
 							}
 						case 5:
 							{
-								// Menu dibawah ini merupakan menu Admin untuk
-								// menghapus data pegawai yang sudah ditambahkan sebelumnya.
+
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menghapus Pegawai=========")
 								var deletePegawai pegawai.Pegawai
@@ -166,14 +162,14 @@ func main() {
 								fmt.Println("=========Data Pegawai=========")
 							}
 						case 9:
-							// Merupakan menu logout dari akun Admin
+
 							callClear()
 							isRunning2 = false
 						}
 					}
 				} else if res.ID > 1 {
 					if res.ID > 1 {
-						// ketika kita masuk menggunakan akun pegawai maka akan muncul menu sebagai berikut
+
 						fmt.Println("Sukses Login", "selamat datang", Username)
 						var isRunning2 bool = true
 						for isRunning2 {
@@ -187,7 +183,7 @@ func main() {
 							switch choice2 {
 							case 1:
 								{
-									// Menu dibawah ini merupakan menu pegawai untuk menambahkan customer.
+
 									fmt.Print("=========Program TOKOKU=========")
 									fmt.Print("\n=========Menu Menambahkan Customer=========")
 									var newUser customer.Customer
@@ -208,8 +204,7 @@ func main() {
 								}
 							case 2:
 								{
-									// Menu dibawah ini merupakan menu pegawai untuk
-									// menambahkan barang dan dimasukkan ke database.
+
 									fmt.Print("=========Program TOKOKU=========")
 									fmt.Print("\n=========Menu Menambahkan Barang=========")
 									var newBarang barang.Barang
@@ -234,8 +229,7 @@ func main() {
 								}
 							case 3:
 								{
-									// Menu dibawah ini merupakan menu pegawai untuk
-									// merubah infomasi/deskripsi barang yang berada di database.
+
 									fmt.Print("=========Program TOKOKU=========")
 									fmt.Print("\n=========Menu Edit Informasi Barang=========")
 									var updateBarang barang.Barang
@@ -256,8 +250,7 @@ func main() {
 								}
 							case 4:
 								{
-									// Menu dibawah ini merupakan menu pegawai untuk
-									// merubah stock atau jumlah barang yang berada di database.
+
 									fmt.Print("=========Program TOKOKU=========")
 									fmt.Print("\n=========Menu Update Stock Barang=========")
 									var updateBarang barang.Barang
@@ -281,8 +274,7 @@ func main() {
 								{
 									var isRun bool = true
 									for isRun {
-										// Dibawah ini merupakan menu transaksi yang hanya bisa diakses oleh pegawai
-										// Menu dibawah ini terdiri dari berapa pilihan.
+
 										fmt.Print("=========Program TOKOKU=========")
 										fmt.Print("\nPILIHAN anda:\n1. Tambah Transaksi \n2. Tambah jumlah Barang \n0. HOME\n")
 										fmt.Println("=========Masukkan Pilihan Anda=========")
@@ -293,8 +285,7 @@ func main() {
 										switch choice2 {
 										case 1:
 											{
-												// Menu ini digunakan untuk menambahkan 
-												// ID customer dan ID pegawai yang melakukan transaksi tersebut.
+
 												fmt.Print("=========Program TOKOKU=========")
 												fmt.Print("\n=========Menu Tambah Transaksi=========")
 												var newTransaksi transaksi.Transaksi
@@ -316,8 +307,7 @@ func main() {
 											}
 										case 2:
 											{
-												// Menu ini digunakan untuk menambahkan 
-												// ID transaksi, ID barang dan jumlah barang yang melakukan transaksi tersebut.
+
 												fmt.Print("=========Program TOKOKU=========")
 												fmt.Print("\n=========Menu Tambah Transaksi=========")
 												var newTransaksi transaksi.Transaksi
@@ -350,15 +340,28 @@ func main() {
 								}
 							case 6:
 								{
-									// Menu ini digunakan untuk menampilkan nota transaksi yang telah kita buat sebelumnya.
+
 									fmt.Print("=========Program TOKOKU=========")
 									var newTransaksi transaksi.Transaksi
 									fmt.Println("\n=========Nota Transaksi=========")
-									// fmt.Print("\n No Transaksi			:", "<", newTransaksi.ID, ">")
-									// fmt.Print("\n Tanggal Transaksi		:", "<", newTransaksi.Tanggal_Transaksi, ">")
-									// fmt.Print("\n Kasir Transaksi		:", "<", newTransaksi.ID_Pegawai, ">")
-									// fmt.Print("\n Barang Transaksi		:", "<", newTransaksi.ID_Barang, ">")
-									// fmt.Print("\n Jumlah Barang			:", "<", newTransaksi.Total_Qty, ">")
+									fmt.Print("\n masukkan ID Customer		:")
+									fmt.Scanln(&newTransaksi.ID_Customer)
+									fmt.Print("\n masukkan No Transaksi		:")
+									fmt.Scanln(&newTransaksi.ID)
+									fmt.Print("\n masukkan Tanggal Transaksi		:")
+									fmt.Scanln(&newTransaksi.Tanggal_Transaksi)
+									fmt.Print("\n masukkan Id kasir		:")
+									fmt.Scanln(&newTransaksi.ID_Pegawai)
+									fmt.Print("\n masukkan nama Barang		:")
+									fmt.Scanln(&newTransaksi.ID_Barang)
+									fmt.Print("\n masukkan Jumlah Barang		:")
+									fmt.Scanln(&newTransaksi.Total_Qty)
+									fmt.Println("\n=========Nota Transaksi TOKOKU=========")
+									fmt.Print("\n No Transaksi			:", "<", newTransaksi.ID, ">")
+									fmt.Print("\n Tanggal Transaksi		:", "<", newTransaksi.Tanggal_Transaksi, ">")
+									fmt.Print("\n Kasir Transaksi		:", "<", newTransaksi.ID_Pegawai, ">")
+									fmt.Print("\n Barang Transaksi		:", "<", newTransaksi.ID_Barang, ">")
+									fmt.Print("\n Jumlah Barang			:", "<", newTransaksi.Total_Qty, ">")
 									fmt.Print("\n Customer			:", "<", newTransaksi.ID_Customer, ">")
 									fmt.Println("\n=========Nota Transaksi TOKOKU=========")
 
@@ -375,7 +378,7 @@ func main() {
 									fmt.Println("=========Transaksi=========")
 								}
 							case 9:
-								// Menu logout dari akun pegawai
+
 								callClear()
 								isRunning2 = false
 							}
@@ -388,7 +391,7 @@ func main() {
 				}
 			}
 		case 0:
-			// Menu exit dari program TOKOKU
+
 			{
 				callClear()
 				isRunning = false
