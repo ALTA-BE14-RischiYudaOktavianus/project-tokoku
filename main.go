@@ -97,7 +97,7 @@ func main() {
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menghapus Transaksi=========")
 								var deleteTrans transaksi.Transaksi
-								fmt.Println("\ndaftar Transaksi sebelum diHapus \n", authTransMenu.SearchTrans(deleteTrans.ID))
+								fmt.Println("\ndaftar Transaksi sebelum dihapus \n", authTransMenu.SearchTran(deleteTrans.ID))
 								fmt.Println("\nmasukkan id transaksi yang akan diHapus :")
 								fmt.Scanln(&deleteTrans.ID)
 								res, err := authTransMenu.DeleteTransaksi(deleteTrans)
@@ -111,7 +111,7 @@ func main() {
 									fmt.Println("Gagal menghapus Transaksi")
 								}
 								fmt.Println("=========Data Transaksi=========")
-								fmt.Println("\ndaftar Transaksi sesudah diHapus \n", authTransMenu.SearchTrans(deleteTrans.ID))
+								fmt.Println("\ndaftar Transaksi sesudah dihapus \n", authTransMenu.SearchTran(deleteTrans.ID))
 								fmt.Println("=========Data Transaksi=========")
 							}
 						case 3:
@@ -268,7 +268,7 @@ func main() {
 									var data barang.Barang
 									var err error
 									fmt.Println("\ndaftar barang sebelum di EDIT\n", authBrgMenu.SearchBarang(data.Id))
-
+									// var displayBarang string
 									var updateBarang barang.Barang
 									fmt.Println("\nmasukkan id barang yang akan diedit :")
 									fmt.Scanln(&updateBarang.Id)
@@ -285,7 +285,7 @@ func main() {
 										fmt.Println("Gagal mengUpdate Barang")
 									}
 									fmt.Println("=========Data Barang=========")
-									fmt.Println("\ndaftar barang sesudah diEDIT\n", authBrgMenu.SearchBarang(data.Id))
+									fmt.Println("\ndaftar barang sesudah di EDIT\n", authBrgMenu.SearchBarang(data.Id))
 									fmt.Println("=========Data Barang=========")
 								}
 							case 4:
@@ -358,27 +358,28 @@ func main() {
 
 												fmt.Print("=========Program TOKOKU=========")
 												fmt.Print("\n=========Menu Tambah Transaksi=========")
-												var newTransaksi transaksi.Transaksi
-												fmt.Println("\ndaftar Transaksi sesudah diTambah \n", authTransMenu.SearchTrans(newTransaksi.ID))
+												var newTransaksi transaksi.Barang_Transaksi
+												var transaksi transaksi.Transaksi
+												var tampil string
+												fmt.Println("\ndaftar Transaksi sebelum diTambah \n", authTransMenu.SearchTran(transaksi.ID))
 												fmt.Println("\nMasukkan ID Transaksi: ")
-												fmt.Scanln(&newTransaksi.ID)
+												fmt.Scanln(&newTransaksi.Id)
 												fmt.Println("\nMasukkan ID Barang: ")
-												fmt.Scanln(&newTransaksi.ID_Barang)
+												fmt.Scanln(&newTransaksi.NamaBarang)
 												fmt.Println("\nJumlah Barang: ")
-												fmt.Scanln(&newTransaksi.Total_Qty)
+												fmt.Scanln(&newTransaksi.Kuantiti)
 
-												res, err := authTransMenu.AddQTY(newTransaksi)
+												res, err := authTransMenu.SearchTrans(newTransaksi)
 												if err != nil {
 													fmt.Println(err.Error())
 												}
 												fmt.Println("=========Transaksi=========")
-												if res {
-													fmt.Println("TRANSAKSI SUKSES")
-												} else {
-													fmt.Println("TRANSAKSI GAGAL")
+												for _, barang := range res {
+													s := fmt.Sprintf("%d. Nama Barang : %s \nkuantitas :%d \ntanggal pembelian: %s\n", barang.Id, barang.NamaBarang, barang.Kuantiti, barang.TanggalTransaksi)
+
+													tampil += s
 												}
-												fmt.Println("=========Transaksi=========")
-												fmt.Println("\ndaftar Transaksi sesudah diTambah \n", authTransMenu.SearchTrans(newTransaksi.ID))
+												fmt.Println(tampil)
 												fmt.Println("=========Transaksi=========")
 											}
 										case 0:
@@ -396,24 +397,8 @@ func main() {
 									fmt.Print("=========Program TOKOKU=========")
 									var newTransaksi transaksi.Nota
 									fmt.Println("\n=========Nota Transaksi=========")
-									// fmt.Print("\n masukkan ID Customer		:")
-									// fmt.Scanln(&newTransaksi)
 									fmt.Print("\n masukkan No Transaksi		:")
 									fmt.Scanln(&newTransaksi.IdNota)
-									// fmt.Print("\n masukkan Tanggal Transaksi		:")
-									// fmt.Scanln(&newTransaksi.Tanggal_Transaksi)
-									// fmt.Print("\n masukkan Id kasir		:")
-									// fmt.Scanln(&newTransaksi.ID_Pegawai)
-									// fmt.Print("\n masukkan nama Barang		:")
-									// fmt.Scanln(&newTransaksi.ID_Barang)
-									// fmt.Print("\n masukkan Jumlah Barang		:")
-									// fmt.Scanln(&newTransaksi.Total_Qty)
-									// fmt.Print("\n No Transaksi			:", "<", ID, ">")
-									// fmt.Print("\n Tanggal Transaksi		:", "<", Tanggal_Transaksi, ">")
-									// fmt.Print("\n Kasir Transaksi		:", "<", ID_Pegawai, ">")
-									// fmt.Print("\n Barang Transaksi		:", "<", ID_Barang, ">")
-									// fmt.Print("\n Jumlah Barang			:", "<", Total_Qty, ">")
-									// fmt.Print("\n Customer			:", "<", ID_Customer, ">")
 									fmt.Println("\n=========Nota Transaksi TOKOKU=========")
 
 									ress, err := authTransMenu.CetakNota(newTransaksi)
@@ -424,16 +409,11 @@ func main() {
 									displayNota := "========Nota=========\n"
 
 									for _, nota := range ress {
-										s := fmt.Sprintf("%d. %s %s %d %s %s\n", nota.IdNota, nota.NamaCustomer, nota.NamaBarang, nota.Kuantiti, nota.NamaPegawai, nota.TanggalTransaksi)
+										s := fmt.Sprintf("%d. \nNama Cust : <%s> \nNama Barang : <%s> \nKuantiti : <%d> \nKasir : <%s> \nTanggal Transaksi : <%s>\n", nota.IdNota, nota.NamaCustomer, nota.NamaBarang, nota.Kuantiti, nota.NamaPegawai, nota.TanggalTransaksi)
 
 										displayNota += s
 									}
-									// displayNotaTransaksi = fmt.Sprintf("%v", displayNota)
-									// if ress {
-									// 	fmt.Println("CETAK NOTA TRANSAKSI SUKSES")
-									// } else {
-									// 	fmt.Println("CETAK NOTA TRANSAKSI GAGAL")
-									// }
+
 									fmt.Println(displayNota)
 
 									fmt.Println("\n=========Nota Transaksi TOKOKU=========")
@@ -448,10 +428,10 @@ func main() {
 								}
 
 								for _, barang := range res {
-										s := fmt.Sprintf("%d. %s %d %s %s\n", barang.Id, barang.Nama_Barang, barang.Stock, barang.Deskripsi, barang.Nama_Pegawai)
+									s := fmt.Sprintf("%d. Nama barang : (%s) \tStok : (%d) \tDeskripsi : <%s> \nPegawai : <%s>\n", barang.Id, barang.Nama_Barang, barang.Stock, barang.Deskripsi, barang.Nama_Pegawai)
 
-										displayBarang += s
-									}
+									displayBarang += s
+								}
 								fmt.Println(displayBarang)
 								fmt.Print("\n=========Data Barang=========\n")
 
