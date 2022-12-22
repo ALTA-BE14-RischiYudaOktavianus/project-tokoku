@@ -16,6 +16,20 @@ type Transaksi struct {
 	ID_Customer       int
 }
 
+type Nota struct {
+	IdNota           int
+	NamaCustomer     string
+	NamaPegawai      string
+	NamaBarang       string
+	Kuantiti         int
+	TanggalTransaksi string
+}
+type Barang_Transaksi struct {
+	Id               int
+	NamaBarang       string
+	Kuantiti         int
+	TanggalTransaksi string
+}
 type AuthMenu struct {
 	DB *sql.DB
 }
@@ -137,50 +151,69 @@ func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 	return true, nil
 }
 
-func (am *AuthMenu) CetakNota(id int) (Transaksi, error) {
-	addQry, err := am.DB.Prepare("SELECT barang_has_transaksi.total_qty, barang_has_transaksi.barang_id,  transaksi.id, customer.nama_cust as pelanggan, transaksi.tanggal_transaksi,transaksi.id_pegawai,p.nama_pegawai as pegawai FROM transaksi INNER JOIN customer on customer.id = transaksi.id_customer INNER JOIN pegawai p on transaksi.id_pegawai = p.id Left join barang_has_transaksi on barang_has_transaksi.transaksi_id = transaksi.id WHERE transaksi.id_customer = ?")
+func (am *AuthMenu) CetakNota(newCetak Nota) ([]Nota, error) {
+	addQry, err := am.DB.Prepare(
+		`SELECT c.nama_cust "Customer", p.nama_pegawai "Kasir", b.nama_barang "Barang", bht.total_qty "Jumlah", t.create_at "Tanggal Transaksi"
+			FROM barang_has_transaksi bht 
+			JOIN barang b on b.id = bht.barang_id
+			JOIN transaksi t on t.id = bht.transaksi_id
+			JOIN pegawai p on p.id = t.id_pegawai
+			JOIN customer c on c.id = t.id_customer
+			WHERE bht.transaksi_id = ?;`)
 	if err != nil {
 		log.Println("Select Cetak prepare", err.Error())
-		return Transaksi{}, errors.New("prepare Select Cetak error")
+		return nil, errors.New("prepare Select Cetak error")
 	}
 
-	res := addQry.QueryRow(id)
-	if res != nil {
-		log.Println("Select cetak", err.Error())
-		return Transaksi{}, errors.New("Select Cetak error")
-	}
-	ress := Transaksi{}
-	err = res.Scan(&ress.ID_Customer)
-
+	rows, err := addQry.Query(newCetak.IdNota)
 	if err != nil {
-		log.Println("after Select Cetak", err.Error())
-		return Transaksi{}, errors.New("after Select cetak error")
+		log.Println("Select cetak", err.Error())
+		return nil, errors.New("select cetak error")
 	}
-
-	ress.ID_Customer = id
-	return ress, nil
+	transaksi := []Nota{}
+	for rows.Next() {
+		trans := Nota{}
+		err = rows.Scan(&trans.NamaCustomer, &trans.NamaPegawai, &trans.NamaBarang, &trans.Kuantiti, &trans.TanggalTransaksi)
+		if err != nil {
+			log.Println("error Loop baris untuk memasukkan data", err.Error())
+			return transaksi, err
+		}
+		transaksi = append(transaksi, trans)
+	}
+	return transaksi, nil
 
 }
 
-func (am *AuthMenu) SearchTrans(id int) (liatTrans []Transaksi) {
+func (am *AuthMenu) SearchTrans(newSearch Barang_Transaksi) ([]Barang_Transaksi, error) {
 	var strBarang string
-	rows, e := am.DB.Query(
-		`SELECT id,
-		nama_barang,
-		stok_barang, deskripsi, id_pegawai
-		FROM barang;`)
+	rowss, e := am.DB.Prepare(
+		`SELECT transaksi_id, b.nama_barang "Barang", bht.total_qty "Jumlah", t.create_at "Tanggal Transaksi"
+		FROM barang_has_transaksi bht
+		JOIN barang b on b.id = bht.barang_id
+		JOIN transaksi t on t.id = bht.transaksi_id
+		WHERE bht.transaksi_id =?`)
 
 	if e != nil {
-		log.Println(e)
-		return
+		log.Println("Select Cetak prepare", e.Error())
+		return nil, errors.New("prepare Select Cetak error")
 	}
 
-	liatTrans = make([]Transaksi, 0)
+	rows, err := rowss.Query(newSearch.Id)
+	if err != nil {
+		log.Println("Select cetak", err.Error())
+		return nil, errors.New("select cetak error")
+	}
+
+	liatTrans := []Barang_Transaksi{}
 	for rows.Next() {
-		row := Transaksi{}
-		rows.Scan(&row.ID, &row.Total_Qty, &row.Tanggal_Transaksi, &row.ID_Pegawai, &row.ID_Barang, &row.ID_Customer)
-		strBarang += fmt.Sprintf("ID: %d %d %s (%d) (%d) <%d>\n", row.ID, row.Total_Qty, row.Tanggal_Transaksi, row.ID_Pegawai, row.ID_Barang, row.ID_Customer)
+		row := Barang_Transaksi{}
+		err = rows.Scan(&row.Id, &row.NamaBarang, &row.Kuantiti, &row.TanggalTransaksi)
+		if err != nil {
+			log.Println("error Loop baris untuk memasukkan data", err.Error())
+			return liatTrans, err
+		}
+		strBarang += fmt.Sprintf("ID: (%d) (%s) <%d> (%s)\n", row.Id, row.NamaBarang, row.Kuantiti, row.TanggalTransaksi)
 		liatTrans = append(liatTrans, row)
 	}
-	return liatTrans
+	return liatTrans, nil
 }

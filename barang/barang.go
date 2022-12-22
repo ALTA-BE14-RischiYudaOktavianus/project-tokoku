@@ -12,7 +12,7 @@ type Barang struct {
 	Nama_Barang  string
 	Stock        int
 	Deskripsi    string
-	Nama_Pegawai int
+	Nama_Pegawai string
 }
 
 type AuthMenu struct {
@@ -174,11 +174,35 @@ func (am *AuthMenu) SearchBarang(id int) (liatBarang []Barang) {
 	for rows.Next() {
 		row := Barang{}
 		rows.Scan(&row.Id, &row.Nama_Barang, &row.Stock, &row.Deskripsi, &row.Nama_Pegawai)
-		strBarang += fmt.Sprintf("ID: %d %s (%d) (%s) <%d>\n", row.Id, row.Nama_Barang, row.Stock, row.Deskripsi, row.Nama_Pegawai)
+		strBarang += fmt.Sprintf("ID: %d %s (%d) (%s) <%s>\n", row.Id, row.Nama_Barang, row.Stock, row.Deskripsi, row.Nama_Pegawai)
 		liatBarang = append(liatBarang, row)
 	}
 	return liatBarang
 }
+
+func (am *AuthMenu) DisplayBarang() ([]Barang, error) {
+	var strBarang string
+	rows, e := am.DB.Query(
+		`SELECT b.id "ID Barang", b.nama_barang "Nama barang", b.stok_barang "Stock Barang", b.deskripsi "Deskripsi Barang", p.nama_pegawai "Nama Pegawai"
+		FROM barang b
+		JOIN pegawai p on b.id_pegawai = p.id;`)
+
+	lihatBarang := make([]Barang, 0)
+
+	if e != nil {
+		log.Println(e)
+		return lihatBarang, e
+	}
+
+	for rows.Next() {
+		row := Barang{}
+		rows.Scan(&row.Id, &row.Nama_Barang, &row.Stock, &row.Deskripsi, &row.Nama_Pegawai)
+		strBarang += fmt.Sprintf("ID: %d %s (%d) (%s) <%s>\n", row.Id, row.Nama_Barang, row.Stock, row.Deskripsi, row.Nama_Pegawai)
+		lihatBarang = append(lihatBarang, row)
+	}
+	return lihatBarang, nil
+}
+
 func (am *AuthMenu) Data(id int) ([]Barang, string, error) {
 	var (
 		selectBarangQry *sql.Rows
@@ -209,7 +233,7 @@ func (am *AuthMenu) Data(id int) ([]Barang, string, error) {
 			log.Println("Loop through rows, using Scan to assign column data to struct fields", err.Error())
 			return arrBarang, strBarang, err
 		}
-		strBarang += fmt.Sprintf("ID: %d %s (%d) (%s) <%d>\n", tmp.Id, tmp.Nama_Barang, tmp.Stock, tmp.Deskripsi, tmp.Nama_Pegawai)
+		strBarang += fmt.Sprintf("ID: %d %s (%d) (%s) <%s>\n", tmp.Id, tmp.Nama_Barang, tmp.Stock, tmp.Deskripsi, tmp.Nama_Pegawai)
 		arrBarang = append(arrBarang, tmp)
 	}
 	return arrBarang, strBarang, nil
