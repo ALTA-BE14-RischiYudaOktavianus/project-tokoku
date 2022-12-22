@@ -20,6 +20,8 @@ func callClear() {
 
 func main() {
 
+	var displayNotaTransaksi string
+
 	var cfg = config.ReadConfig()
 	var conn = config.ConnectSQL(*cfg)
 
@@ -194,7 +196,13 @@ func main() {
 						var isRunning2 bool = true
 						for isRunning2 {
 							fmt.Print("=========Program TOKOKU=========")
-							fmt.Print("\nPILIHAN anda:\n1. Tambah Customer \n2. Tambah Barang \n3. Edit Informasi \n4. Update Stock Barang \n5. Transaksi \n6. Cetak Nota Transaksi \n9. Logout\n")
+							fmt.Print("\nPILIHAN anda:\n1. Tambah Customer \n2. Tambah Barang \n3. Edit Informasi \n4. Update Stock Barang \n5. Transaksi \n6. Cetak Nota Transaksi \n7. Display Stock Barang \n9. Logout\n")
+
+							if len(displayNotaTransaksi) > 0 {
+								fmt.Println(displayNotaTransaksi)
+								displayNotaTransaksi = " "
+							}
+
 							fmt.Println("=========Masukkan Pilihan Anda=========")
 							var choice2 int
 							fmt.Scanln(&choice2)
@@ -386,12 +394,12 @@ func main() {
 								{
 
 									fmt.Print("=========Program TOKOKU=========")
-									var newTransaksi int
+									var newTransaksi transaksi.Nota
 									fmt.Println("\n=========Nota Transaksi=========")
-									fmt.Print("\n masukkan ID Customer		:")
-									fmt.Scanln(&newTransaksi)
-									// fmt.Print("\n masukkan No Transaksi		:")
-									// fmt.Scanln(&newTransaksi.ID)
+									// fmt.Print("\n masukkan ID Customer		:")
+									// fmt.Scanln(&newTransaksi)
+									fmt.Print("\n masukkan No Transaksi		:")
+									fmt.Scanln(&newTransaksi.IdNota)
 									// fmt.Print("\n masukkan Tanggal Transaksi		:")
 									// fmt.Scanln(&newTransaksi.Tanggal_Transaksi)
 									// fmt.Print("\n masukkan Id kasir		:")
@@ -400,7 +408,6 @@ func main() {
 									// fmt.Scanln(&newTransaksi.ID_Barang)
 									// fmt.Print("\n masukkan Jumlah Barang		:")
 									// fmt.Scanln(&newTransaksi.Total_Qty)
-									fmt.Println("\n=========Nota Transaksi TOKOKU=========")
 									// fmt.Print("\n No Transaksi			:", "<", ID, ">")
 									// fmt.Print("\n Tanggal Transaksi		:", "<", Tanggal_Transaksi, ">")
 									// fmt.Print("\n Kasir Transaksi		:", "<", ID_Pegawai, ">")
@@ -413,14 +420,41 @@ func main() {
 									if err != nil {
 										fmt.Println(err.Error())
 									}
-									if ress.ID == newTransaksi {
-										fmt.Println("CETAK NOTA TRANSAKSI SUKSES")
-									} else {
-										fmt.Println("CETAK NOTA TRANSAKSI GAGAL")
-									}
 
-									fmt.Println("=========Transaksi=========")
+									displayNota := "========Nota=========\n"
+
+									for _, nota := range ress {
+										s := fmt.Sprintf("%d. %s %s %d %s %s\n", nota.IdNota, nota.NamaCustomer, nota.NamaBarang, nota.Kuantiti, nota.NamaPegawai, nota.TanggalTransaksi)
+
+										displayNota += s
+									}
+									// displayNotaTransaksi = fmt.Sprintf("%v", displayNota)
+									// if ress {
+									// 	fmt.Println("CETAK NOTA TRANSAKSI SUKSES")
+									// } else {
+									// 	fmt.Println("CETAK NOTA TRANSAKSI GAGAL")
+									// }
+									fmt.Println(displayNota)
+
+									fmt.Println("\n=========Nota Transaksi TOKOKU=========")
 								}
+							case 7:
+								fmt.Print("=========Program TOKOKU=========\n")
+								var displayBarang string
+								fmt.Print("\n=========Data Barang=========\n")
+								res, err := authBrgMenu.DisplayBarang()
+								if err != nil {
+									fmt.Println("Error menampilkan barang", err.Error())
+								}
+
+								for _, barang := range res {
+										s := fmt.Sprintf("%d. %s %d %s %s\n", barang.Id, barang.Nama_Barang, barang.Stock, barang.Deskripsi, barang.Nama_Pegawai)
+
+										displayBarang += s
+									}
+								fmt.Println(displayBarang)
+								fmt.Print("\n=========Data Barang=========\n")
+
 							case 9:
 
 								callClear()

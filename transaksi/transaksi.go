@@ -16,6 +16,15 @@ type Transaksi struct {
 	ID_Customer       int
 }
 
+type Nota struct {
+	IdNota       int
+	NamaCustomer string
+	NamaPegawai  string
+	NamaBarang   string
+	Kuantiti     int
+	TanggalTransaksi string
+}
+
 type AuthMenu struct {
 	DB *sql.DB
 }
@@ -137,28 +146,36 @@ func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 	return true, nil
 }
 
-func (am *AuthMenu) CetakNota(id int) (Transaksi, error) {
-	addQry, err := am.DB.Prepare("SELECT barang_has_transaksi.total_qty, barang_has_transaksi.barang_id,  transaksi.id, customer.nama_cust as pelanggan, transaksi.tanggal_transaksi,transaksi.id_pegawai,p.nama_pegawai as pegawai FROM transaksi INNER JOIN customer on customer.id = transaksi.id_customer INNER JOIN pegawai p on transaksi.id_pegawai = p.id Left join barang_has_transaksi on barang_has_transaksi.transaksi_id = transaksi.id WHERE transaksi.id_customer = ?")
+func (am *AuthMenu) CetakNota(newCetak Nota) ([]Nota, error) {
+	addQry, err := am.DB.Prepare(
+		`SELECT c.nama_cust "Customer", p.nama_pegawai "Kasir", b.nama_barang "Barang", bht.total_qty "Jumlah", t.create_at "Tanggal Transaksi"
+			FROM barang_has_transaksi bht 
+			JOIN barang b on b.id = bht.barang_id
+			JOIN transaksi t on t.id = bht.transaksi_id
+			JOIN pegawai p on p.id = t.id_pegawai
+			JOIN customer c on c.id = t.id_customer
+			WHERE bht.transaksi_id = ?;`)
 	if err != nil {
 		log.Println("Select Cetak prepare", err.Error())
-		return Transaksi{}, errors.New("prepare Select Cetak error")
+		return nil, errors.New("prepare Select Cetak error")
 	}
 
-	res := addQry.QueryRow(id)
-	if res != nil {
-		log.Println("Select cetak", err.Error())
-		return Transaksi{}, errors.New("Select Cetak error")
-	}
-	ress := Transaksi{}
-	err = res.Scan(&ress.ID_Customer)
-
+	rows, err := addQry.Query(newCetak.IdNota)
 	if err != nil {
-		log.Println("after Select Cetak", err.Error())
-		return Transaksi{}, errors.New("after Select cetak error")
+		log.Println("Select cetak", err.Error())
+		return nil, errors.New("select cetak error")
 	}
-
-	ress.ID_Customer = id
-	return ress, nil
+	transaksi := []Nota{}
+	for rows.Next() {
+		trans := Nota{}
+		err = rows.Scan(&trans.NamaCustomer, &trans.NamaPegawai, &trans.NamaBarang, &trans.Kuantiti, &trans.TanggalTransaksi)
+		if err != nil {
+			log.Println("error Loop baris untuk memasukkan data", err.Error())
+			return transaksi, err
+		}
+		transaksi = append(transaksi, trans)
+	}
+	return transaksi, nil
 
 }
 
