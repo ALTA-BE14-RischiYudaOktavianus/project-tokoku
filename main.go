@@ -246,7 +246,7 @@ func main() {
 									fmt.Scanln(&newBarang.Deskripsi)
 									fmt.Print("\nMasukkan ID Pegawai : ")
 									fmt.Scanln(&newBarang.Nama_Pegawai)
-									res, err := authBrgMenu.Barang(newBarang)
+									res, err := authBrgMenu.AddBarang(newBarang)
 									if err != nil {
 										fmt.Println(err.Error())
 									}

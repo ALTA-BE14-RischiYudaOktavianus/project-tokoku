@@ -21,6 +21,7 @@ type AuthMenu struct {
 	DB *sql.DB
 }
 
+// Fungsi pengecekan apakah ada barang yang sama atau tidak
 func (am *AuthMenu) DuplicateBarang(name string) bool {
 	res := am.DB.QueryRow("SELECT id FROM barang where nama_barang = ?", name)
 	var idExist int
@@ -32,6 +33,7 @@ func (am *AuthMenu) DuplicateBarang(name string) bool {
 	return true
 }
 
+// Fungsi untuk mengedit barang
 func (am *AuthMenu) EditBarang(editBarang Barang) (bool, error) {
 
 	addQry, err := am.DB.Prepare("UPDATE barang set deskripsi=?  where id= ?")
@@ -61,6 +63,8 @@ func (am *AuthMenu) EditBarang(editBarang Barang) (bool, error) {
 
 	return true, nil
 }
+
+// Fungsi untuk update stock barang
 func (am *AuthMenu) UpdateBarang(editBarang Barang) (bool, error) {
 
 	addQry, err := am.DB.Prepare("UPDATE barang set stok_barang=? where id= ?")
@@ -90,7 +94,9 @@ func (am *AuthMenu) UpdateBarang(editBarang Barang) (bool, error) {
 
 	return true, nil
 }
-func (am *AuthMenu) Barang(newBarang Barang) (bool, error) {
+
+// Fungsi untuk menambahkan barang
+func (am *AuthMenu) AddBarang(newBarang Barang) (bool, error) {
 
 	registerQry, err := am.DB.Prepare("INSERT INTO barang(nama_barang,stok_barang,deskripsi,id_pegawai) VALUES (?,?,?,?)")
 	if err != nil {
@@ -125,6 +131,7 @@ func (am *AuthMenu) Barang(newBarang Barang) (bool, error) {
 	return true, nil
 }
 
+// Fungsi delete barang di database
 func (am *AuthMenu) Deletebarang(deleteBarang Barang) (bool, error) {
 
 	registerQry, err := am.DB.Prepare("DELETE FROM barang WHERE id=?")
@@ -159,6 +166,8 @@ func (am *AuthMenu) Deletebarang(deleteBarang Barang) (bool, error) {
 
 	return true, nil
 }
+
+// Fungsi mencari barang di sistem
 func (am *AuthMenu) SearchBarang(id int) (liatBarang []Barang) {
 	var strBarang string
 	rows, e := am.DB.Query(
@@ -182,6 +191,7 @@ func (am *AuthMenu) SearchBarang(id int) (liatBarang []Barang) {
 	return liatBarang
 }
 
+// Fungsi untuk menampilkan barang yang berada di data base
 func (am *AuthMenu) DisplayBarang() ([]Barang, error) {
 	var strBarang string
 	rows, e := am.DB.Query(
