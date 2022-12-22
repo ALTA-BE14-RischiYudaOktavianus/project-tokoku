@@ -183,7 +183,28 @@ func (am *AuthMenu) CetakNota(newCetak Nota) ([]Nota, error) {
 	return transaksi, nil
 
 }
+func (am *AuthMenu) SearchTran(id int) (liatTrans []Transaksi) {
+	var strBarang string
+	rows, e := am.DB.Query(
+		`SELECT id,
+		nama_barang,
+		stok_barang, deskripsi, id_pegawai
+		FROM barang;`)
 
+	if e != nil {
+		log.Println(e)
+		return
+	}
+
+	liatTrans = make([]Transaksi, 0)
+	for rows.Next() {
+		row := Transaksi{}
+		rows.Scan(&row.ID, &row.Total_Qty, &row.Tanggal_Transaksi, &row.ID_Pegawai, &row.ID_Barang, &row.ID_Customer)
+		strBarang += fmt.Sprintf("ID: %d %d %s (%d) (%d) <%d>\n", row.ID, row.Total_Qty, row.Tanggal_Transaksi, row.ID_Pegawai, row.ID_Barang, row.ID_Customer)
+		liatTrans = append(liatTrans, row)
+	}
+	return liatTrans
+}
 func (am *AuthMenu) SearchTrans(newSearch Barang_Transaksi) ([]Barang_Transaksi, error) {
 	var strBarang string
 	rowss, e := am.DB.Prepare(

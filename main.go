@@ -97,7 +97,7 @@ func main() {
 								fmt.Print("=========Program TOKOKU=========")
 								fmt.Print("\n=========Menu Menghapus Transaksi=========")
 								var deleteTrans transaksi.Transaksi
-								// fmt.Println("\ndaftar Transaksi sebelum diHapus \n", authTransMenu.SearchTrans(deleteTrans.ID))
+								fmt.Println("\ndaftar Transaksi sebelum dihapus \n", authTransMenu.SearchTran(deleteTrans.ID))
 								fmt.Println("\nmasukkan id transaksi yang akan diHapus :")
 								fmt.Scanln(&deleteTrans.ID)
 								res, err := authTransMenu.DeleteTransaksi(deleteTrans)
@@ -111,7 +111,7 @@ func main() {
 									fmt.Println("Gagal menghapus Transaksi")
 								}
 								fmt.Println("=========Data Transaksi=========")
-								// fmt.Println("\ndaftar Transaksi sesudah diHapus \n", authTransMenu.SearchTrans(deleteTrans.Id))
+								fmt.Println("\ndaftar Transaksi sesudah dihapus \n", authTransMenu.SearchTran(deleteTrans.ID))
 								fmt.Println("=========Data Transaksi=========")
 							}
 						case 3:
@@ -246,7 +246,7 @@ func main() {
 									fmt.Scanln(&newBarang.Deskripsi)
 									fmt.Print("\nMasukkan ID Pegawai : ")
 									fmt.Scanln(&newBarang.Nama_Pegawai)
-									res, err := authBrgMenu.Barang(newBarang)
+									res, err := authBrgMenu.AddBarang(newBarang)
 									if err != nil {
 										fmt.Println(err.Error())
 									}
@@ -268,7 +268,7 @@ func main() {
 									var data barang.Barang
 									var err error
 									fmt.Println("\ndaftar barang sebelum di EDIT\n", authBrgMenu.SearchBarang(data.Id))
-
+									// var displayBarang string
 									var updateBarang barang.Barang
 									fmt.Println("\nmasukkan id barang yang akan diedit :")
 									fmt.Scanln(&updateBarang.Id)
@@ -285,7 +285,7 @@ func main() {
 										fmt.Println("Gagal mengUpdate Barang")
 									}
 									fmt.Println("=========Data Barang=========")
-									fmt.Println("\ndaftar barang sesudah diEDIT\n", authBrgMenu.SearchBarang(data.Id))
+									fmt.Println("\ndaftar barang sesudah di EDIT\n", authBrgMenu.SearchBarang(data.Id))
 									fmt.Println("=========Data Barang=========")
 								}
 							case 4:
@@ -359,8 +359,9 @@ func main() {
 												fmt.Print("=========Program TOKOKU=========")
 												fmt.Print("\n=========Menu Tambah Transaksi=========")
 												var newTransaksi transaksi.Barang_Transaksi
+												var transaksi transaksi.Transaksi
 												var tampil string
-												// fmt.Println("\ndaftar Transaksi sebelum diTambah \n", authTransMenu.SearchTrans(newTransaksi))
+												fmt.Println("\ndaftar Transaksi sebelum diTambah \n", authTransMenu.SearchTran(transaksi.ID))
 												fmt.Println("\nMasukkan ID Transaksi: ")
 												fmt.Scanln(&newTransaksi.Id)
 												fmt.Println("\nMasukkan ID Barang: ")
@@ -379,7 +380,6 @@ func main() {
 													tampil += s
 												}
 												fmt.Println(tampil)
-												// fmt.Println("\ndaftar Transaksi sesudah diTambah \n", authTransMenu.SearchTrans(newTransaksi))
 												fmt.Println("=========Transaksi=========")
 											}
 										case 0:
