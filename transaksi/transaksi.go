@@ -62,6 +62,8 @@ type AuthMenu struct {
 
 // }
 
+// Fungsi ini menambahkan transaksi baru ke database. Fungsi ini menerima sebuah struct Transaksi sebagai input
+// dan mengembalikan nilai boolean yang menandakan sukses atau gagalnya operasi dan sebuah objek error. 
 func (am *AuthMenu) AddTransaksi(newTransaksi Transaksi) (bool, error) {
 	addQry, err := am.DB.Prepare("INSERT into transaksi (id_pegawai, id_customer) VALUES (?, ?)")
 	if err != nil {
@@ -89,6 +91,9 @@ func (am *AuthMenu) AddTransaksi(newTransaksi Transaksi) (bool, error) {
 
 	return true, nil
 }
+
+// Fungsi ini menambahkan jumlah barang ke dalam transaksi yang ada di database. Fungsi ini menerima sebuah struct Transaksi
+// sebagai input dan mengembalikan nilai boolean yang menandakan sukses atau gagalnya operasi dan sebuah objek error.
 func (am *AuthMenu) AddQTY(newQty Transaksi) (bool, error) {
 	addQry, err := am.DB.Prepare("INSERT into barang_has_transaksi (barang_id, transaksi_id, total_qty) VALUES (?, ?, ?)")
 	if err != nil {
@@ -116,6 +121,9 @@ func (am *AuthMenu) AddQTY(newQty Transaksi) (bool, error) {
 
 	return true, nil
 }
+
+// Fungsi ini menghapus sebuah transaksi dari database. Fungsi ini menerima sebuah struct Transaksi sebagai input
+// dan mengembalikan nilai boolean yang menandakan sukses atau gagalnya operasi dan sebuah objek error.
 func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 
 	registerQry, err := am.DB.Prepare("DELETE FROM transaksi WHERE id=?")
@@ -146,6 +154,8 @@ func (am *AuthMenu) DeleteTransaksi(deleteTransaksi Transaksi) (bool, error) {
 	return true, nil
 }
 
+// Fungsi ini mencetak nota transaksi dari database. Fungsi ini menerima sebuah struct Nota sebagai input
+// dan mengembalikan sebuah slice dari struct Nota yang berisi data transaksi dan sebuah objek error.
 func (am *AuthMenu) CetakNota(newCetak Nota) ([]Nota, error) {
 	addQry, err := am.DB.Prepare(
 		`SELECT c.nama_cust "Customer", p.nama_pegawai "Kasir", b.nama_barang "Barang", bht.total_qty "Jumlah", t.create_at "Tanggal Transaksi"
@@ -179,6 +189,8 @@ func (am *AuthMenu) CetakNota(newCetak Nota) ([]Nota, error) {
 
 }
 
+// Fungsi ini menampilkan data transaksi dari database. Fungsi ini menerima sebuah integer sebagai input
+// dan mengembalikan sebuah slice dari struct Transaksi yang berisi data transaksi.
 func (am *AuthMenu) SearchTrans(id int) (liatTrans []Transaksi) {
 	var strBarang string
 	rows, e := am.DB.Query(
