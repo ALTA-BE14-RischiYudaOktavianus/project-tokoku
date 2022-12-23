@@ -189,6 +189,7 @@ func (am *AuthMenu) SearchBarang(id int) (liatBarang []Barang) {
 	return liatBarang
 }
 
+// Fungsi untuk menampilkan barang yang berada di data base
 func (am *AuthMenu) DisplayBarang() ([]Barang, error) {
 	var strBarang string
 	rows, e := am.DB.Query(
