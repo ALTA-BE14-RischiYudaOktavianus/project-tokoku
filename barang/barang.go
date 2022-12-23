@@ -15,8 +15,6 @@ type Barang struct {
 	Nama_Pegawai string
 }
 
-
-
 type AuthMenu struct {
 	DB *sql.DB
 }
@@ -206,7 +204,6 @@ func (am *AuthMenu) DisplayBarang() ([]Barang, error) {
 		return lihatBarang, e
 	}
 
-	
 	for rows.Next() {
 		row := Barang{}
 		rows.Scan(&row.Id, &row.Nama_Barang, &row.Stock, &row.Deskripsi, &row.Nama_Pegawai)

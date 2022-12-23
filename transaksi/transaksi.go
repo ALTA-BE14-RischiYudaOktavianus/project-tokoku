@@ -17,14 +17,19 @@ type Transaksi struct {
 }
 
 type Nota struct {
-	IdNota       int
-	NamaCustomer string
-	NamaPegawai  string
-	NamaBarang   string
-	Kuantiti     int
+	IdNota           int
+	NamaCustomer     string
+	NamaPegawai      string
+	NamaBarang       string
+	Kuantiti         int
 	TanggalTransaksi string
 }
-
+type Barang_Transaksi struct {
+	Id               int
+	NamaBarang       string
+	Kuantiti         int
+	TanggalTransaksi string
+}
 type AuthMenu struct {
 	DB *sql.DB
 }
@@ -63,7 +68,7 @@ type AuthMenu struct {
 // }
 
 // Fungsi ini menambahkan transaksi baru ke database. Fungsi ini menerima sebuah struct Transaksi sebagai input
-// dan mengembalikan nilai boolean yang menandakan sukses atau gagalnya operasi dan sebuah objek error. 
+// dan mengembalikan nilai boolean yang menandakan sukses atau gagalnya operasi dan sebuah objek error.
 func (am *AuthMenu) AddTransaksi(newTransaksi Transaksi) (bool, error) {
 	addQry, err := am.DB.Prepare("INSERT into transaksi (id_pegawai, id_customer) VALUES (?, ?)")
 	if err != nil {
@@ -212,4 +217,38 @@ func (am *AuthMenu) SearchTrans(id int) (liatTrans []Transaksi) {
 		liatTrans = append(liatTrans, row)
 	}
 	return liatTrans
+}
+
+func (am *AuthMenu) SearchTran(newSearch Barang_Transaksi) ([]Barang_Transaksi, error) {
+	var strBarang string
+	rowss, e := am.DB.Prepare(
+		`SELECT transaksi_id, b.nama_barang "Barang", bht.total_qty "Jumlah", t.create_at "Tanggal Transaksi"
+		FROM barang_has_transaksi bht
+		JOIN barang b on b.id = bht.barang_id
+		JOIN transaksi t on t.id = bht.transaksi_id
+		WHERE bht.transaksi_id =?`)
+
+	if e != nil {
+		log.Println("Select Cetak prepare", e.Error())
+		return nil, errors.New("prepare Select Cetak error")
+	}
+
+	rows, err := rowss.Query(newSearch.Id)
+	if err != nil {
+		log.Println("Select cetak", err.Error())
+		return nil, errors.New("select cetak error")
+	}
+
+	liatTrans := []Barang_Transaksi{}
+	for rows.Next() {
+		row := Barang_Transaksi{}
+		err = rows.Scan(&row.Id, &row.NamaBarang, &row.Kuantiti, &row.TanggalTransaksi)
+		if err != nil {
+			log.Println("error Loop baris untuk memasukkan data", err.Error())
+			return liatTrans, err
+		}
+		strBarang += fmt.Sprintf("ID: (%d) (%s) <%d> (%s)\n", row.Id, row.NamaBarang, row.Kuantiti, row.TanggalTransaksi)
+		liatTrans = append(liatTrans, row)
+	}
+	return liatTrans, nil
 }
